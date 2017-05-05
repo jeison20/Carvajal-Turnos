@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 
 namespace Orchestations
 {
@@ -20,6 +21,10 @@ namespace Orchestations
 
             foreach (string Url in ListaArchivosDescargados)
             {
+                string Content = File.ReadAllText(Url);
+                Content = Content.Replace("'", System.Environment.NewLine);
+                File.WriteAllText(Url, Content);
+
                 ObjectManager.AuthenticArchiveMD5(Url);
                 if (!ObjectManager.ValidFileStructure(Url))
                 {
@@ -59,6 +64,32 @@ namespace Orchestations
             }
 
             LogOrchestation.WriteLog("Fin de ejecucion orden de pedido");
+        }
+
+        public void ProcessrecAdv()
+        {
+            IEnumerable<string> FullFile = File.ReadLines(@"C:\Users\USUARIO\Documents\Mis archivos recibidos\LVRECADV1.edi");
+            string LineBGM = string.Empty;
+            string LinesNAD = string.Empty;
+
+            LineBGM = FullFile
+                    .Where(line => line.Contains("BGM")).FirstOrDefault();
+
+            string[] ArrayLineBGM = LineBGM.Replace("BGM+", "").Replace("'", "").Split('+');
+            string PurchaseOrderNumber = ArrayLineBGM[1];
+            int CuttingIndex = ArrayLineBGM[0].IndexOf(":");
+            if (CuttingIndex > 0)
+            {
+                ArrayLineBGM[0] = ArrayLineBGM[0].Substring(0, CuttingIndex);
+            }
+            string str = File.ReadAllText(@"C:\Users\USUARIO\Documents\Mis archivos recibidos\LVRECADV1.edi");
+            str = str.Replace("'", System.Environment.NewLine);
+            File.WriteAllText(@"C:\Users\USUARIO\Documents\Mis archivos recibidos\LVRECADV1.edi", str);
+
+            LineBGM = FullFile
+                    .Where(line => line.Contains("NAD+")).FirstOrDefault();
+
+
         }
         public void StartsProcess()
         {

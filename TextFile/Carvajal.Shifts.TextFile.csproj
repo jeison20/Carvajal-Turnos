@@ -7,8 +7,8 @@
     <ProjectGuid>{52D4DAAD-72FC-4CC8-999E-ABC2860578C1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PlainText</RootNamespace>
-    <AssemblyName>PlainText</AssemblyName>
+    <RootNamespace>TextFile</RootNamespace>
+    <AssemblyName>TextFile</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

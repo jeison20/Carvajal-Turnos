@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.Managers", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.Orchestations", "Orchestations\Carvajal.Shifts.Orchestations.csproj", "{66FAB74C-4BD9-4E5E-903B-E09D3A3DB426}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.PlainText", "PlainText\Carvajal.Shifts.PlainText.csproj", "{52D4DAAD-72FC-4CC8-999E-ABC2860578C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.TextFile", "TextFile\Carvajal.Shifts.TextFile.csproj", "{52D4DAAD-72FC-4CC8-999E-ABC2860578C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

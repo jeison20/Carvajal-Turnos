@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
-namespace PlainText
+namespace TextFile
 {
     public static class LogHelper
     {

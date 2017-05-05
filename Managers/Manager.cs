@@ -1,5 +1,5 @@
 ﻿using EDIFACT;
-using PlainText;
+using TextFile;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -184,7 +184,12 @@ namespace Managers
 
                     string[] ArrayLineBGM = LineBGM.Replace("BGM+", "").Replace("'", "").Split('+');
                     ObjectHeader.PurchaseOrderNumber = ArrayLineBGM[1];
-                    ObjectHeader.TypeOfPurchaseOrder = ArrayLineBGM[0].Substring(0, 3);
+                    int CuttingIndex = ArrayLineBGM[0].IndexOf(":");
+                    if (CuttingIndex > 0)
+                    {
+                        ArrayLineBGM[0] = ArrayLineBGM[0].Substring(0, CuttingIndex);
+                    }
+                    ObjectHeader.TypeOfPurchaseOrder = ArrayLineBGM[0];
                 }
 
 
@@ -303,7 +308,7 @@ namespace Managers
             }
             catch
             {
-                LogManager.WriteLog(string.Format("Se generaron inconvenientes en el procesamiento del archivo {0} ",Path.GetFileName(PathFile)));
+                LogManager.WriteLog(string.Format("Se generaron inconvenientes en el procesamiento del archivo {0} ", Path.GetFileName(PathFile)));
                 return false;
             }
         }

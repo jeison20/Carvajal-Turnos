@@ -63,9 +63,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PlainText\Carvajal.Shifts.PlainText.csproj">
+    <ProjectReference Include="..\TextFile\Carvajal.Shifts.TextFile.csproj">
       <Project>{52d4daad-72fc-4cc8-999e-abc2860578c1}</Project>
-      <Name>Carvajal.Shifts.PlainText</Name>
+      <Name>Carvajal.Shifts.TextFile</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
