@@ -1,11 +1,11 @@
 ﻿using EDIFACT;
-using TextFile;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Xml;
+using TextFile;
 
 namespace Managers
 {
@@ -28,28 +28,22 @@ namespace Managers
                 XmlDocument[] xDoc = null;
                 xDoc = msg.SerializeToXml();
 
-                //string data = "";
                 using (var stringWriter = new StringWriter())
                 using (var xmlTextWriter = XmlWriter.Create(stringWriter))
                 {
                     xDoc[0].WriteTo(xmlTextWriter);
 
                     xmlTextWriter.Flush();
-                    //data = stringWriter.GetStringBuilder().ToString();
                 }
                 XmlDocument archivoXML = xDoc[0];
                 return archivoXML;
             }
             else
                 return null;
-
-            //var query = archivoXML.GetElementsByTagName("BGM").Item(0).Attributes[3].Value;
         }
 
         public object ProcessEdi(XmlDocument Document)
         {
-
-
             return null;
         }
 
@@ -109,7 +103,6 @@ namespace Managers
 
         public bool ValidFileStructure(string Path)
         {
-
             try
             {
                 bool BitValidFileStructure = true;
@@ -164,7 +157,6 @@ namespace Managers
 
         public bool SaveDataEDI(string PathFile)
         {
-
             try
             {
                 IEnumerable<string> FullFile = File.ReadLines(PathFile);
@@ -175,7 +167,6 @@ namespace Managers
                 bool ValiditySecondHierarchy = false;
                 List<string> ListAmountRequested = new List<string>();
                 List<DetailElement> ListDetailElement = new List<DetailElement>();
-
 
                 if (ArchiveXML.GetElementsByTagName("BGM").Count > 0)
                 {
@@ -192,8 +183,6 @@ namespace Managers
                     ObjectHeader.TypeOfPurchaseOrder = ArrayLineBGM[0];
                 }
 
-
-
                 for (int i = 0; i < ArchiveXML.GetElementsByTagName("NAD").Count; i++)
                 {
                     if (ArchiveXML.GetElementsByTagName("NAD").Item(i).Attributes[0].Value.Equals("SU"))
@@ -209,7 +198,6 @@ namespace Managers
                         ObjectHeader.MerchandiseDeliverySite = ArchiveXML.GetElementsByTagName("NAD").Item(i).Attributes[1].Value;
                     }
                 }
-
 
                 for (int i = 0; i < ArchiveXML.GetElementsByTagName("DTM").Count; i++)
                 {
@@ -247,7 +235,6 @@ namespace Managers
                     ObjectHeader.DeadLine = ObjectHeader.DeadLine.Substring(Index + 1, IndexSub - (Index + 1));
                 }
 
-
                 List<string> PrimeListAmountRequested = FullFile
                              .Where(line => line.Contains("QTY+21")).ToList();
 
@@ -255,7 +242,6 @@ namespace Managers
                 {
                     ListAmountRequested.Add(item.Substring(item.IndexOf(":") + 1));
                 }
-
 
                 if (ArchiveXML.GetElementsByTagName("LIN").Count > 0)
                 {
@@ -302,7 +288,16 @@ namespace Managers
                     }
                 }
                 if (ListDetailElement.Count > 0 && !string.IsNullOrEmpty(ObjectHeader.PurchaseOrderNumber) && !string.IsNullOrEmpty(ObjectHeader.TypeOfPurchaseOrder) && !string.IsNullOrEmpty(ObjectHeader.DeadLine) && !string.IsNullOrEmpty(ObjectHeader.MerchandiseDeliverySite))
-                    return true;
+                {
+                    try
+                    {
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
                 else
                     return false;
             }
@@ -313,14 +308,153 @@ namespace Managers
             }
         }
 
+        public bool SaveDataRecAdvEDI(string PathFile)
+        {
+            try
+            {
+                HeaderElement ObjectHeader = new HeaderElement();
+                List<DetailElement> ListDetail = new List<DetailElement>();
+
+
+                string ReplaceNewLine = File.ReadAllText(PathFile);
+                ReplaceNewLine = ReplaceNewLine.Replace("'", System.Environment.NewLine);
+                File.WriteAllText(PathFile, ReplaceNewLine);
+
+                IEnumerable<string> FullFile = File.ReadLines(PathFile);
+                string LineBGM = string.Empty;
+
+                LineBGM = FullFile
+                        .Where(line => line.Contains("BGM")).FirstOrDefault();
+
+                string[] ArrayLineBGM = LineBGM.Replace("BGM+", "").Replace("'", "").Split('+');
+                string PurchaseOrderNumber = ArrayLineBGM[1];
+                if (PurchaseOrderNumber.Contains(":"))
+                {
+                    PurchaseOrderNumber = PurchaseOrderNumber.Substring(0, PurchaseOrderNumber.IndexOf(":"));
+                }
+
+                int CuttingIndex = ArrayLineBGM[0].IndexOf(":");
+                if (CuttingIndex > 0)
+                {
+                    ArrayLineBGM[0] = ArrayLineBGM[0].Substring(0, CuttingIndex);
+                }
+                ObjectHeader.ReceiptWarningNumber = ArrayLineBGM[0];
+
+                IEnumerable<string> LinesNAD = FullFile
+                        .Where(line => line.Contains("NAD"));
+
+                string LineNadBy = LinesNAD.Where(c => c.Contains("NAD+BY")).FirstOrDefault();
+                ObjectHeader.Commerce = LineNadBy.Replace("NAD+BY", "").Split('+')[1].Split(':')[0];
+
+                string LineNadSu = LinesNAD.Where(c => c.Contains("NAD+SU")).FirstOrDefault();
+                ObjectHeader.Provider = LineNadSu.Replace("NAD+SU", "").Split('+')[1].Split(':')[0];
+
+                string LineNadDp = LinesNAD.Where(c => c.Contains("NAD+DP")).FirstOrDefault();
+                ObjectHeader.MerchandiseDeliverySite = LineNadDp.Replace("NAD+DP", "").Split('+')[1].Split(':')[0];
+
+                ObjectHeader.DeadLine = FullFile.FirstOrDefault(line => line.Contains("DTM"));
+                ObjectHeader.DeadLine = ObjectHeader.DeadLine.Split(':')[1];
+
+                string LineReff = FullFile.FirstOrDefault(line => line.Contains("RFF+ON"));
+                LineReff = LineReff.Split(':')[1];
+                ObjectHeader.PurchaseOrderNumber = LineReff;
+
+                List<string> ListCountLinesLIN = FullFile
+                       .Where(line => line.Contains("LIN+")).ToList();
+
+                for (int i = 0; i < ListCountLinesLIN.Count; i++)
+                {
+                    DetailElement Detail = new DetailElement();
+
+                    string delimiter = string.Empty;
+                    if (i.Equals(ListCountLinesLIN.Count - 1))
+                        delimiter = "UNZ+";
+                    else
+                        delimiter = "LIN+" + CompleteZeros(4, (i + 2).ToString());
+                    string LineLin = ListCountLinesLIN[i];
+                    LineLin = LineLin.Split('+')[3];
+                    int Index = LineLin.IndexOf(":");
+                    if (Index > 0)
+                    {
+                        LineLin = LineLin.Substring(0, Index);
+                    }
+                    Detail.ProductEAN = LineLin;
+
+                    List<string> ListDetailElementLin = FullFile
+                                          .SkipWhile(line => !line.Contains("LIN+" + CompleteZeros(4, (i + 1).ToString()))).Skip(1).TakeWhile(line => !line.Contains(delimiter)).ToList();
+
+                    if (ListDetailElementLin.Where(c => c.Contains("IMD+F")).Count() > 0)
+                    {
+                        string DetailElementIMD = ListDetailElementLin.FirstOrDefault(c => c.Contains("IMD+F"));
+                        string[] ListDetailElementIMD = DetailElementIMD.Split('+');
+                        DetailElementIMD = string.Empty;
+                        if (ListDetailElementIMD.Length > 2)
+                        {
+                            ListDetailElementIMD = ListDetailElementIMD[3].Split(':');
+                            DetailElementIMD = ListDetailElementIMD[ListDetailElementIMD.Length - 1];
+                        }
+                        Detail.Description = DetailElementIMD;
+                    }
+                    if (ListDetailElementLin.Where(c => c.Contains("QTY+46")).Count() > 0)
+                    {
+                        Detail.DeliveredQuantity = ListDetailElementLin.FirstOrDefault(c => c.Contains("QTY+46")).Split(':')[1];
+                    }
+                    if (ListDetailElementLin.Where(c => c.Contains("QTY+194")).Count() > 0)
+                    {
+                        Detail.AmountReceivedAccepted = ListDetailElementLin.FirstOrDefault(c => c.Contains("QTY+194")).Split(':')[1];
+                    }
+                    if (!string.IsNullOrEmpty(Detail.ProductEAN) && !string.IsNullOrEmpty(Detail.Description) && !string.IsNullOrEmpty(Detail.DeliveredQuantity) && !string.IsNullOrEmpty(Detail.AmountReceivedAccepted))
+                        ListDetail.Add(Detail);
+                }
+
+                if (ListDetail.Count > 0 && !string.IsNullOrEmpty(ObjectHeader.PurchaseOrderNumber) && !string.IsNullOrEmpty(ObjectHeader.ReceiptWarningNumber) && !string.IsNullOrEmpty(ObjectHeader.DeadLine) && !string.IsNullOrEmpty(ObjectHeader.MerchandiseDeliverySite))
+                    try
+                    {
+                        return true;
+                    }
+                    catch
+                    {
+
+                        return false;
+                    }
+                else
+                    return false;
+            }
+            catch
+            {
+                LogManager.WriteLog(string.Format("Se generaron inconvenientes en el procesamiento del archivo {0} ", Path.GetFileName(PathFile)));
+                return false;
+            }
+
+        }
+
+        public string CompleteZeros(int Length, string Line)
+        {
+            string CountZeros = string.Empty;
+            for (int i = 0; i < Length; i++)
+            {
+                CountZeros += "0";
+            }
+            if (Length > Line.Length)
+                CountZeros = CountZeros.Substring(0, CountZeros.Length - Line.Length);
+            else
+                CountZeros = Line;
+
+            return CountZeros;
+        }
+
         #endregion Methods
     }
+
     public class DetailElement
     {
         public string ProductEAN { get; set; }
         public string AmountRequested { get; set; }
         public string PointSale { get; set; }
         public string QuantityPerPointOfSale { get; set; }
+        public string Description { get; set; }
+        public string DeliveredQuantity { get; set; }
+        public string AmountReceivedAccepted { get; set; }
     }
 
     public class HeaderElement
@@ -332,6 +466,6 @@ namespace Managers
         public string DateOfIssue { get; set; }
         public string DeadLine { get; set; }
         public string MerchandiseDeliverySite { get; set; }
-
+        public string ReceiptWarningNumber { get; set; }
     }
 }

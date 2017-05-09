@@ -11,6 +11,7 @@ namespace Orchestations
         public void ProcessOrder(string IdentificacionComercio)
         {
             Manager ObjectManager = new Manager();
+
             LogOrchestation.WriteLog("Inicio de ejecucion orden de pedido");
             if (!Directory.Exists(ConfigurationManager.AppSettings["Url"] + "\\" + IdentificacionComercio))
             {
@@ -36,7 +37,18 @@ namespace Orchestations
                 if (ObjectManager.UploadFile(Path.GetFileName(Url), Archivo, IdentificacionComercio, "Procesados"))
                 {
                     Archivo.Close();
-                    if (ObjectManager.SaveDataEDI(Url))
+                    bool ValidSaveData = false;
+
+                    if (Path.GetFileName(Url).Contains("RECADV"))
+                    {
+                        ValidSaveData = ObjectManager.SaveDataEDI(Url);
+                    }
+                    else
+                    {
+                        ValidSaveData = ObjectManager.SaveDataRecAdvEDI(Url);
+                    }
+
+                    if (ValidSaveData)
                     {
                         LogOrchestation.WriteLog(string.Format("El archivo {0} fue Subido exitosamente a la carpeta Procesados", Path.GetFileName(Url)));
                         if (ObjectManager.DeleteFile(IdentificacionComercio + "/SinProcesar/" + Path.GetFileName(Url)))
@@ -66,34 +78,11 @@ namespace Orchestations
             LogOrchestation.WriteLog("Fin de ejecucion orden de pedido");
         }
 
-        public void ProcessrecAdv()
-        {
-            IEnumerable<string> FullFile = File.ReadLines(@"C:\Users\USUARIO\Documents\Mis archivos recibidos\LVRECADV1.edi");
-            string LineBGM = string.Empty;
-            string LinesNAD = string.Empty;
-
-            LineBGM = FullFile
-                    .Where(line => line.Contains("BGM")).FirstOrDefault();
-
-            string[] ArrayLineBGM = LineBGM.Replace("BGM+", "").Replace("'", "").Split('+');
-            string PurchaseOrderNumber = ArrayLineBGM[1];
-            int CuttingIndex = ArrayLineBGM[0].IndexOf(":");
-            if (CuttingIndex > 0)
-            {
-                ArrayLineBGM[0] = ArrayLineBGM[0].Substring(0, CuttingIndex);
-            }
-            string str = File.ReadAllText(@"C:\Users\USUARIO\Documents\Mis archivos recibidos\LVRECADV1.edi");
-            str = str.Replace("'", System.Environment.NewLine);
-            File.WriteAllText(@"C:\Users\USUARIO\Documents\Mis archivos recibidos\LVRECADV1.edi", str);
-
-            LineBGM = FullFile
-                    .Where(line => line.Contains("NAD+")).FirstOrDefault();
-
-
-        }
         public void StartsProcess()
         {
             ProcessOrder("Comercio1");
         }
     }
+
+
 }
