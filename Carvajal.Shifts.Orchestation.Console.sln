@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.Orchestatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.TextFile", "TextFile\Carvajal.Shifts.TextFile.csproj", "{52D4DAAD-72FC-4CC8-999E-ABC2860578C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.Data", "Carvajal.Shifts.Data\Carvajal.Shifts.Data.csproj", "{AC6E6726-2494-41E0-B404-22AA852473F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{52D4DAAD-72FC-4CC8-999E-ABC2860578C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52D4DAAD-72FC-4CC8-999E-ABC2860578C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52D4DAAD-72FC-4CC8-999E-ABC2860578C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC6E6726-2494-41E0-B404-22AA852473F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC6E6726-2494-41E0-B404-22AA852473F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC6E6726-2494-41E0-B404-22AA852473F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC6E6726-2494-41E0-B404-22AA852473F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
