@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.Console", "ConsoleCarvajal\Carvajal.Shifts.Console.csproj", "{F3DCC26E-77FA-4127-BB96-F10615A70E65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Turns.Console", "ConsoleCarvajal\Carvajal.Turns.Console.csproj", "{F3DCC26E-77FA-4127-BB96-F10615A70E65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.Managers", "Managers\Carvajal.Shifts.Managers.csproj", "{CA8990F4-C1D2-4FCE-976C-B994E72287D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Turns.Managers", "Managers\Carvajal.Turns.Managers.csproj", "{CA8990F4-C1D2-4FCE-976C-B994E72287D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.Orchestations", "Orchestations\Carvajal.Shifts.Orchestations.csproj", "{66FAB74C-4BD9-4E5E-903B-E09D3A3DB426}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Turns.Orchestations", "Orchestations\Carvajal.Turns.Orchestations.csproj", "{66FAB74C-4BD9-4E5E-903B-E09D3A3DB426}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.TextFile", "TextFile\Carvajal.Shifts.TextFile.csproj", "{52D4DAAD-72FC-4CC8-999E-ABC2860578C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Turns.TextFile", "TextFile\Carvajal.Turns.TextFile.csproj", "{52D4DAAD-72FC-4CC8-999E-ABC2860578C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Shifts.Data", "Carvajal.Shifts.Data\Carvajal.Shifts.Data.csproj", "{AC6E6726-2494-41E0-B404-22AA852473F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Turns.Data", "Carvajal.Shifts.Data\Carvajal.Turns.Data.csproj", "{AC6E6726-2494-41E0-B404-22AA852473F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

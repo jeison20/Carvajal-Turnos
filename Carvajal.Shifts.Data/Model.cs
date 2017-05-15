@@ -10,7 +10,7 @@ namespace Carvajal.Shifts.Data
         public Model()
             : base("name=ModelData")
         {
-        }
+        }     
 
         public virtual DbSet<Advices> Advices { get; set; }
         public virtual DbSet<AdvicesProducts> AdvicesProducts { get; set; }

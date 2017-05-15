@@ -12,6 +12,8 @@ namespace Orchestations
         {
             Manager ObjectManager = new Manager();
 
+            ObjectManager.CompleteZeros(4, "21");
+
             LogOrchestation.WriteLog("Inicio de ejecucion orden de pedido");
             if (!Directory.Exists(ConfigurationManager.AppSettings["Url"] + "\\" + IdentificacionComercio))
             {

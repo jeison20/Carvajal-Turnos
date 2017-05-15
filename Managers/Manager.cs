@@ -1,4 +1,7 @@
-﻿using EDIFACT;
+﻿using Carvajal.Shifts.Data;
+using EDIFACT;
+using Managers.Components;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,11 +43,6 @@ namespace Managers
             }
             else
                 return null;
-        }
-
-        public object ProcessEdi(XmlDocument Document)
-        {
-            return null;
         }
 
         /// <summary>
@@ -159,6 +157,173 @@ namespace Managers
         {
             try
             {
+                HeaderElement ObjectHeader = new HeaderElement();
+                ObjectHeader = ReadOrderEdi(PathFile);
+
+                if (ObjectHeader.Details.Count > 0 && !string.IsNullOrEmpty(ObjectHeader.PurchaseOrderNumber) && !string.IsNullOrEmpty(ObjectHeader.TypeOfPurchaseOrder) && !string.IsNullOrEmpty(ObjectHeader.DeadLine) && !string.IsNullOrEmpty(ObjectHeader.MerchandiseDeliverySite))
+                {
+                    try
+                    {
+                        Users UserProvider = CUsers.Instance.SearchUser(Convert.ToInt64(ObjectHeader.Provider));
+                        Users UserMerchant = CUsers.Instance.SearchUser(Convert.ToInt64(ObjectHeader.Commerce));
+                        Orders ObjectOrders = new Orders();
+                        ObjectOrders.OrderNumber = ObjectHeader.PurchaseOrderNumber;
+                        ObjectOrders.MaxDeliveryDate = Convert.ToDateTime(ObjectHeader.DeadLine);
+                        ObjectOrders.OrderType = ObjectHeader.TypeOfPurchaseOrder;
+                        ObjectOrders.FkStatus_Identifier = 1;
+                        ObjectOrders.FkUsers_Merchant_Identifier = UserMerchant.PkIdentifier;
+                        ObjectOrders.FkUsers_Manufacturer_Identifier = UserProvider.PkIdentifier;
+                        ObjectOrders.LastChangeDate = Convert.ToDateTime(ObjectHeader.DateOfIssue);
+                        ObjectOrders.ProcessingDate = DateTime.Now;
+                        if (COrders.Instance.SaveOrders(ObjectOrders))
+                        {
+                            foreach (DetailElement Detail in ObjectHeader.Details)
+                            {
+                                OrdersProducts Product = new OrdersProducts();
+                                Product.FkOrders_Identifier = ObjectOrders.PkIdentifier;
+                                Product.Description = Detail.Description;
+                                Product.Code = Convert.ToInt64(Detail.ProductEAN);
+                                Product.SplitQuantity = Convert.ToDecimal(Detail.QuantityPerPointOfSale);
+                                Product.Line = Convert.ToInt32(Detail.Line);
+                                if (!COrdersProducts.Instance.SaveOrdersProducts(Product))
+                                {
+                                    LogManager.WriteLog("Error al tratar de guardar elemento OrdersProducts: " + JsonConvert.SerializeObject(Product));
+                                    List<OrdersProducts> ListProductInserted = COrdersProducts.Instance.SearchOrdersProducts(ObjectOrders.PkIdentifier);
+                                    foreach (var item in ListProductInserted)
+                                    {
+                                        COrdersProducts.Instance.DeleteOrdersProducts(item);
+                                    }
+                                    COrders.Instance.DeleteOrder(ObjectOrders);
+                                    return false;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            LogManager.WriteLog("Error al tratar de guardar elemento Orders: " + JsonConvert.SerializeObject(ObjectOrders));
+                            return false;
+                        }
+
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        LogManager.WriteLog("Error al durante el guarde de elemento Orders: " + ex.Message);
+                        return false;
+                    }
+                }
+                else
+                {
+                    LogManager.WriteLog("Se presento problemas con los datos obligatorios suministrados ");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.WriteLog(string.Format("Se generaron inconvenientes en el Guarde del archivo {0} " + ex.Message, Path.GetFileName(PathFile)));
+                return false;
+            }
+        }
+
+        public bool SaveDataRecAdvEDI(string PathFile)
+        {
+            try
+            {
+                HeaderElement ObjectHeader = new HeaderElement();
+
+                ObjectHeader = ReadRecAdvEdi(PathFile);
+
+                if (ObjectHeader.Details.Count > 0 && !string.IsNullOrEmpty(ObjectHeader.PurchaseOrderNumber) && !string.IsNullOrEmpty(ObjectHeader.ReceiptWarningNumber) && !string.IsNullOrEmpty(ObjectHeader.DeadLine) && !string.IsNullOrEmpty(ObjectHeader.MerchandiseDeliverySite))
+                {
+                    try
+                    {
+                        Users UserProvider = CUsers.Instance.SearchUser(Convert.ToInt64(ObjectHeader.Provider));
+                        Users UserMerchant = CUsers.Instance.SearchUser(Convert.ToInt64(ObjectHeader.Commerce));
+                        Advices ObjectAdvicesProducts = new Advices();
+                        ObjectAdvicesProducts.FkUsers_Merchant_Identifier = UserMerchant.PkIdentifier;
+                        ObjectAdvicesProducts.FkUsers_Manufacturer_Identifier = UserProvider.PkIdentifier;
+
+                        ObjectAdvicesProducts.AdviceNumber = ObjectHeader.ReceiptWarningNumber;
+                        ObjectAdvicesProducts.Orders_OrderNumber = ObjectHeader.PurchaseOrderNumber;
+                        ObjectAdvicesProducts.ReceiptDate = Convert.ToDateTime(ObjectHeader.DeadLine);
+                        ObjectAdvicesProducts.ManualAdvise = false;
+                        ObjectAdvicesProducts.ProcessingDate = DateTime.Now;
+                        Centres Center = CCentres.Instance.SearchCentresForId(Convert.ToInt64(ObjectHeader.MerchandiseDeliverySite));
+                        if (Center == null)
+                        {
+                            LogManager.WriteLog("Error durante el procesamiento del RecAdv el centro enviado no existe  " + ObjectHeader.MerchandiseDeliverySite);
+                            return false;
+                        }
+                        ObjectAdvicesProducts.FkCentres_Identifier = Center.PkIdentifier;
+
+                        if (CAdvices.Instance.SaveAdvices(ObjectAdvicesProducts))
+                        {
+                            foreach (var item in ObjectHeader.Details)
+                            {
+                                AdvicesProducts ObjectAdvicesProduct = new AdvicesProducts();                             
+                                ObjectAdvicesProduct.FkAdvices_Identifier = ObjectAdvicesProducts.PkIdentifier;
+                                ObjectAdvicesProduct.Code = Convert.ToInt64(item.ProductEAN);
+                                ObjectAdvicesProduct.Description = item.Description;
+                                ObjectAdvicesProduct.ReceivedAndAcceptedQuantity = Convert.ToDecimal(item.AmountReceivedAccepted);
+                                if (!CAdvicesProducts.Instance.SaveAdvicesProduct(ObjectAdvicesProduct))
+                                {
+                                    LogManager.WriteLog("Error al tratar de guardar elemento AdvicesProducts: " + JsonConvert.SerializeObject(ObjectAdvicesProduct));
+                                    List<AdvicesProducts> ListProductInserted = CAdvicesProducts.Instance.SearchAdvicesProducts(ObjectAdvicesProducts.PkIdentifier);
+                                    foreach (var itemProductInsert in ListProductInserted)
+                                    {
+                                        CAdvicesProducts.Instance.DeleteAdvicesProduct(itemProductInsert);
+                                    }
+                                    CAdvices.Instance.DeleteAdvices(ObjectAdvicesProducts);
+                                    return false;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            LogManager.WriteLog("Error al tratar de guardar elemento Advices: " + JsonConvert.SerializeObject(ObjectAdvicesProducts));
+                            return false;
+                        }
+
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        LogManager.WriteLog("Error  durante el guarde del RecAdv " + ex.Message);
+                        return false;
+                    }
+                }
+                else
+                {
+                    LogManager.WriteLog("Se presento problemas con los datos obligatorios suministrados ");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.WriteLog(string.Format("Se generaron inconvenientes en el procesamiento RecAdv del archivo {0} " + ex.Message, Path.GetFileName(PathFile)));
+                return false;
+            }
+        }
+
+        public string CompleteZeros(int Length, string Line)
+        {
+            string CountZeros = string.Empty;
+            for (int i = 0; i < Length; i++)
+            {
+                CountZeros += "0";
+            }
+            if (Length > Line.Length)
+                CountZeros = CountZeros.Substring(0, CountZeros.Length - Line.Length);
+            else
+                CountZeros = Line;
+
+            return CountZeros;
+        }
+
+        public HeaderElement ReadOrderEdi(string PathFile)
+        {
+            try
+            {
                 IEnumerable<string> FullFile = File.ReadLines(PathFile);
                 XmlDocument ArchiveXML = new Manager().ConvertEdiToXML(PathFile);
                 HeaderElement ObjectHeader = new HeaderElement();
@@ -263,6 +428,7 @@ namespace Managers
                             {
                                 DetailElement DetailElement = new DetailElement();
                                 DetailElement.ProductEAN = ArchiveXML.GetElementsByTagName("LIN").Item(i).Attributes[2].Value;
+                                DetailElement.Line = ArchiveXML.GetElementsByTagName("LIN").Item(i).Attributes[1].Value;
                                 DetailElement.AmountRequested = ListAmountRequested[i];
 
                                 string Loc7 = string.Empty;
@@ -273,7 +439,9 @@ namespace Managers
                                 if (string.IsNullOrEmpty(DetailElement.PointSale))
                                     DetailElement.PointSale = ObjectHeader.MerchandiseDeliverySite;
                                 DetailElement.QuantityPerPointOfSale = ListDetailElementLin[b + 1].Replace("QTY+11:", "").Replace("'", "");
-                                ListDetailElement.Add(DetailElement);
+
+                                if (!string.IsNullOrEmpty(DetailElement.ProductEAN) && !string.IsNullOrEmpty(DetailElement.AmountRequested) && !string.IsNullOrEmpty(DetailElement.PointSale) && !string.IsNullOrEmpty(DetailElement.QuantityPerPointOfSale))
+                                    ListDetailElement.Add(DetailElement);
                             }
                         }
                         else
@@ -283,38 +451,27 @@ namespace Managers
                             DetailElement.AmountRequested = ListAmountRequested[i];
                             DetailElement.PointSale = ObjectHeader.MerchandiseDeliverySite;
                             DetailElement.QuantityPerPointOfSale = ListAmountRequested[i];
-                            ListDetailElement.Add(DetailElement);
+                            if (!string.IsNullOrEmpty(DetailElement.ProductEAN) && !string.IsNullOrEmpty(DetailElement.AmountRequested) && !string.IsNullOrEmpty(DetailElement.PointSale) && !string.IsNullOrEmpty(DetailElement.QuantityPerPointOfSale))
+                                ListDetailElement.Add(DetailElement);
                         }
                     }
+                    ObjectHeader.Details = ListDetailElement;
                 }
-                if (ListDetailElement.Count > 0 && !string.IsNullOrEmpty(ObjectHeader.PurchaseOrderNumber) && !string.IsNullOrEmpty(ObjectHeader.TypeOfPurchaseOrder) && !string.IsNullOrEmpty(ObjectHeader.DeadLine) && !string.IsNullOrEmpty(ObjectHeader.MerchandiseDeliverySite))
-                {
-                    try
-                    {
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                }
-                else
-                    return false;
+                return ObjectHeader;
             }
-            catch
+            catch (Exception ex)
             {
-                LogManager.WriteLog(string.Format("Se generaron inconvenientes en el procesamiento del archivo {0} ", Path.GetFileName(PathFile)));
-                return false;
+                LogManager.WriteLog("Errores durante la lectura del Edi " + ex.Message);
+                return new HeaderElement();
             }
         }
 
-        public bool SaveDataRecAdvEDI(string PathFile)
+        public HeaderElement ReadRecAdvEdi(string PathFile)
         {
             try
             {
                 HeaderElement ObjectHeader = new HeaderElement();
                 List<DetailElement> ListDetail = new List<DetailElement>();
-
 
                 string ReplaceNewLine = File.ReadAllText(PathFile);
                 ReplaceNewLine = ReplaceNewLine.Replace("'", System.Environment.NewLine);
@@ -407,40 +564,14 @@ namespace Managers
                         ListDetail.Add(Detail);
                 }
 
-                if (ListDetail.Count > 0 && !string.IsNullOrEmpty(ObjectHeader.PurchaseOrderNumber) && !string.IsNullOrEmpty(ObjectHeader.ReceiptWarningNumber) && !string.IsNullOrEmpty(ObjectHeader.DeadLine) && !string.IsNullOrEmpty(ObjectHeader.MerchandiseDeliverySite))
-                    try
-                    {
-                        return true;
-                    }
-                    catch
-                    {
-
-                        return false;
-                    }
-                else
-                    return false;
+                ObjectHeader.Details = ListDetail;
+                return ObjectHeader;
             }
-            catch
+            catch (Exception ex)
             {
-                LogManager.WriteLog(string.Format("Se generaron inconvenientes en el procesamiento del archivo {0} ", Path.GetFileName(PathFile)));
-                return false;
+                LogManager.WriteLog("Se presento error durante la lectura del archivo: " + ex.Message);
+                return new HeaderElement();
             }
-
-        }
-
-        public string CompleteZeros(int Length, string Line)
-        {
-            string CountZeros = string.Empty;
-            for (int i = 0; i < Length; i++)
-            {
-                CountZeros += "0";
-            }
-            if (Length > Line.Length)
-                CountZeros = CountZeros.Substring(0, CountZeros.Length - Line.Length);
-            else
-                CountZeros = Line;
-
-            return CountZeros;
         }
 
         #endregion Methods
@@ -455,6 +586,7 @@ namespace Managers
         public string Description { get; set; }
         public string DeliveredQuantity { get; set; }
         public string AmountReceivedAccepted { get; set; }
+        public string Line { get; set; }
     }
 
     public class HeaderElement
@@ -467,5 +599,6 @@ namespace Managers
         public string DeadLine { get; set; }
         public string MerchandiseDeliverySite { get; set; }
         public string ReceiptWarningNumber { get; set; }
+        public List<DetailElement> Details { get; set; }
     }
 }
