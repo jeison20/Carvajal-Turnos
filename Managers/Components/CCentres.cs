@@ -1,4 +1,5 @@
 ﻿using Carvajal.Shifts.Data;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -24,18 +25,18 @@ namespace Managers.Components
 
         public bool SaveCentres(Centres Center)
         {
-            DbContextTransaction dbTx = Instance.Database.BeginTransaction();
+          
             try
             {
-                Instance.Database.BeginTransaction();
+                
                 Centres.Add(Center);
                 Instance.SaveChanges();
-                dbTx.Commit();
+             
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                dbTx.Rollback();
+                LogManager.WriteLog("Error en el metodo SaveCentres" + ex.Message);
                 return false;
             }
         }
@@ -52,7 +53,7 @@ namespace Managers.Components
             }
         }
 
-        public Centres SearchCentresForId(long Identifier)
+        public Centres SearchCentresForId(string Identifier)
         {
             try
             {

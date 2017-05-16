@@ -13,15 +13,18 @@ namespace Carvajal.Shifts.Data
         {
             Advices = new HashSet<Advices>();
             Exceptions = new HashSet<Exceptions>();
-            LinkedCentres = new HashSet<LinkedCentres>();
-            WorkingHours = new HashSet<WorkingHours>();
         }
 
-        public long? FkUsers_Identifier { get; set; }
+        [Required]
+        [StringLength(35)]
+        public string FkUsers_Merchant_Identifier { get; set; }
+
+        [StringLength(35)]
+        public string FkUsers_Responsable_Identifier { get; set; }
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public long PkIdentifier { get; set; }
+        [StringLength(35)]
+        public string PkIdentifier { get; set; }
 
         public int? WeeklyCapacity { get; set; }
 
@@ -30,33 +33,39 @@ namespace Carvajal.Shifts.Data
         [StringLength(1)]
         public string FirstDay { get; set; }
 
-        [StringLength(70)]
-        public string Name { get; set; }
-
-        public short? MumberOfDock { get; set; }
+        [StringLength(7)]
+        public string ListOfWorkingDays { get; set; }
 
         [Column(TypeName = "smalldatetime")]
-        public DateTime? TimeBetweenSuppliers { get; set; }
+        public DateTime? StartTime { get; set; }
+
+        [Column(TypeName = "smalldatetime")]
+        public DateTime? EndTime { get; set; }
+
+        [StringLength(175)]
+        public string Name { get; set; }
+
+        public short? MumberOfDocks { get; set; }
+
+        public int? TimeBetweenSuppliers { get; set; }
 
         public bool Status { get; set; }
 
         [Column(TypeName = "smalldatetime")]
         public DateTime? LastChangeDate { get; set; }
 
-        public short? Timezone { get; set; }
+        public int FkTimezones_Identifier { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Advices> Advices { get; set; }
 
+        public virtual Timezones Timezones { get; set; }
+
         public virtual Users Users { get; set; }
+
+        public virtual Users Users1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Exceptions> Exceptions { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<LinkedCentres> LinkedCentres { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<WorkingHours> WorkingHours { get; set; }
     }
 }

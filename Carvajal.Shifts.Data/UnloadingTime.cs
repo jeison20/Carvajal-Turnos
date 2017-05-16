@@ -9,11 +9,14 @@ namespace Carvajal.Shifts.Data
     [Table("UnloadingTime")]
     public partial class UnloadingTime
     {
-        public long? FkUsers_Merchant_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Merchant_Identifier { get; set; }
 
-        public long? FkUsers_Manufacturer_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Manufacturer_Identifier { get; set; }
 
-        public long? ProductCode { get; set; }
+        [StringLength(35)]
+        public string ProductCode { get; set; }
 
         public decimal? AmountPerPallet { get; set; }
 

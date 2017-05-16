@@ -12,7 +12,7 @@ namespace Orchestations
         {
             Manager ObjectManager = new Manager();
 
-            ObjectManager.CompleteZeros(4, "21");
+
 
             LogOrchestation.WriteLog("Inicio de ejecucion orden de pedido");
             if (!Directory.Exists(ConfigurationManager.AppSettings["Url"] + "\\" + IdentificacionComercio))
@@ -24,9 +24,12 @@ namespace Orchestations
 
             foreach (string Url in ListaArchivosDescargados)
             {
-                string Content = File.ReadAllText(Url);
-                Content = Content.Replace("'", System.Environment.NewLine);
-                File.WriteAllText(Url, Content);
+                if (File.ReadAllLines(Url).Length == 1)
+                {
+                    string Content = File.ReadAllText(Url);
+                    Content = Content.Replace("'", "'" + System.Environment.NewLine);
+                    File.WriteAllText(Url, Content);
+                }
 
                 ObjectManager.AuthenticArchiveMD5(Url);
                 if (!ObjectManager.ValidFileStructure(Url))
@@ -41,7 +44,7 @@ namespace Orchestations
                     Archivo.Close();
                     bool ValidSaveData = false;
 
-                    if (Path.GetFileName(Url).Contains("RECADV"))
+                    if (!Path.GetFileName(Url).Contains("RECADV"))
                     {
                         ValidSaveData = ObjectManager.SaveDataEDI(Url);
                     }

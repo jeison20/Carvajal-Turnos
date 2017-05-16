@@ -15,11 +15,13 @@ namespace Carvajal.Shifts.Data
         }
 
         [Key]
-        public int PkIdentifier { get; set; }
+        public long PkIdentifier { get; set; }
 
-        public long? FkUsers_Merchant_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Merchant_Identifier { get; set; }
 
-        public long? FkUsers_Manufacturer_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Manufacturer_Identifier { get; set; }
 
         [StringLength(35)]
         public string OrderNumber { get; set; }
@@ -37,6 +39,8 @@ namespace Carvajal.Shifts.Data
 
         [Column(TypeName = "smalldatetime")]
         public DateTime? ProcessingDate { get; set; }
+
+        public virtual Status Status { get; set; }
 
         public virtual Users Users { get; set; }
 

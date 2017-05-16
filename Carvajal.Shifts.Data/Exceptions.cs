@@ -8,9 +8,11 @@ namespace Carvajal.Shifts.Data
 
     public partial class Exceptions
     {
-        public long? FkUsers_Merchant_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Merchant_Identifier { get; set; }
 
-        public long? FkCentres_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkCentres_Identifier { get; set; }
 
         [Column(TypeName = "smalldatetime")]
         public DateTime? StartDateTime { get; set; }
@@ -24,16 +26,22 @@ namespace Carvajal.Shifts.Data
         [Column(Order = 0)]
         public bool GeneralRuleToApply { get; set; }
 
-        public int? FkReason_Identifier { get; set; }
-
         [Key]
         [Column(Order = 1)]
+        [StringLength(3)]
+        public string FkBlockingReasons_Identifier { get; set; }
+
+        [Key]
+        [Column(Order = 2)]
         public bool Status { get; set; }
 
         [Column(TypeName = "smalldatetime")]
         public DateTime? LastChangeDate { get; set; }
 
-        public long? FkUsers_Creator_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Creator_Identifier { get; set; }
+
+        public virtual BlockingReasons BlockingReasons { get; set; }
 
         public virtual Centres Centres { get; set; }
 

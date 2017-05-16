@@ -9,14 +9,14 @@ namespace Carvajal.Shifts.Data
     public partial class TurnsProducts
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int PkIdentifier { get; set; }
+        public long PkIdentifier { get; set; }
 
-        public int? FkTurns_Identifier { get; set; }
+        public long? FkTurns_Identifier { get; set; }
 
-        public long? Code { get; set; }
+        [StringLength(35)]
+        public string Code { get; set; }
 
-        public decimal? InTurnQuantity { get; set; }
+        public long? ScheludedQuantity { get; set; }
 
         public virtual Turns Turns { get; set; }
     }

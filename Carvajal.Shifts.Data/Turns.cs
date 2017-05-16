@@ -15,18 +15,19 @@ namespace Carvajal.Shifts.Data
         }
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int PkIdentifier { get; set; }
+        public long PkIdentifier { get; set; }
 
-        public int? TurnNumber { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Merchant_Identifier { get; set; }
 
-        public long? FkUsers_Merchant_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Manufacturer_Identifier { get; set; }
 
-        public long? FkUsers_Manufacturer_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Requester_Identifier { get; set; }
 
-        public long? FkUsers_Requester_Identifier { get; set; }
-
-        public long? FkUsers_Modifier_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Modifier_Identifier { get; set; }
 
         [StringLength(35)]
         public string Orders_OrderNumber { get; set; }
@@ -35,12 +36,6 @@ namespace Carvajal.Shifts.Data
         public string ReceivingAdvice_ReceivingAdviceNumber { get; set; }
 
         public short? Dock { get; set; }
-
-        public long? ProductCode { get; set; }
-
-        public int? ScheludedQuantity { get; set; }
-
-        public int? ReceivingQuantity { get; set; }
 
         [Column(TypeName = "smalldatetime")]
         public DateTime? StartDateTime { get; set; }

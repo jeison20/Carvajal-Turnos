@@ -15,12 +15,13 @@ namespace Carvajal.Shifts.Data
         }
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int PkIdentifier { get; set; }
+        public long PkIdentifier { get; set; }
 
-        public long? FkUsers_Merchant_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Merchant_Identifier { get; set; }
 
-        public long? FkUsers_Manufacturer_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkUsers_Manufacturer_Identifier { get; set; }
 
         [StringLength(35)]
         public string AdviceNumber { get; set; }
@@ -30,7 +31,8 @@ namespace Carvajal.Shifts.Data
         [StringLength(35)]
         public string Orders_OrderNumber { get; set; }
 
-        public long? FkCentres_Identifier { get; set; }
+        [StringLength(35)]
+        public string FkCentres_Identifier { get; set; }
 
         [Column(TypeName = "smalldatetime")]
         public DateTime? ReceiptDate { get; set; }

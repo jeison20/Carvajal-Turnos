@@ -9,7 +9,7 @@ namespace ConsoleCarvajal
         {
             try
             {
-                new Orchestation().ProcessOrder("");
+                new Orchestation().StartsProcess();
             }
             catch (Exception ex)
             {

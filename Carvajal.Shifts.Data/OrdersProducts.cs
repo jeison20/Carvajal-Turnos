@@ -9,19 +9,19 @@ namespace Carvajal.Shifts.Data
     public partial class OrdersProducts
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int PkIdentifier { get; set; }
+        public long PkIdentifier { get; set; }
 
-        public int? FkOrders_Identifier { get; set; }
+        public long? FkOrders_Identifier { get; set; }
 
         public int? Line { get; set; }
 
-        public long? Code { get; set; }
-
         [StringLength(35)]
+        public string Code { get; set; }
+
+        [StringLength(70)]
         public string Description { get; set; }
 
-        public decimal? SplitQuantity { get; set; }
+        public long? SplitQuantity { get; set; }
 
         public virtual Orders Orders { get; set; }
     }

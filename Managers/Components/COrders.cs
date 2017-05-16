@@ -1,4 +1,5 @@
 ﻿using Carvajal.Shifts.Data;
+using System;
 using System.Data.Entity;
 using System.Linq;
 
@@ -23,18 +24,15 @@ namespace Managers.Components
 
         public bool SaveOrders(Orders Order)
         {
-            DbContextTransaction dbTx = Instance.Database.BeginTransaction();
             try
             {
-                Instance.Database.BeginTransaction();
                 Orders.Add(Order);
                 Instance.SaveChanges();
-                dbTx.Commit();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                dbTx.Rollback();
+                LogManager.WriteLog("Error en el metodo SaveOrders" + ex.Message);
                 return false;
             }
         }

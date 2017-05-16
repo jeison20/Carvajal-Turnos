@@ -130,14 +130,14 @@ namespace Managers
 
                             if (BitValidFileStructure)
                             {
-                                int LinesQTY = FullFile.Where(line => line.Contains("QTY+21")).Count();
-                                if (LinesQTY < 1 || LinesQTY != LinesLIN)
+                                int LinesQTY = FullFile.Where(line => line.Contains("QTY+")).Count();
+                                if (LinesQTY < 1)
                                     BitValidFileStructure = false;
 
                                 if (BitValidFileStructure)
                                 {
-                                    int LinesUNS = FullFile.Where(line => line.Contains("UNS+")).Count();
-                                    if (LinesUNS < 1 || LinesUNS > 1)
+                                    int LinesUNZ = FullFile.Where(line => line.Contains("UNZ")).Count();
+                                    if (LinesUNZ < 1 || LinesUNZ > 1)
                                         BitValidFileStructure = false;
                                 }
                             }
@@ -164,16 +164,28 @@ namespace Managers
                 {
                     try
                     {
-                        Users UserProvider = CUsers.Instance.SearchUser(Convert.ToInt64(ObjectHeader.Provider));
-                        Users UserMerchant = CUsers.Instance.SearchUser(Convert.ToInt64(ObjectHeader.Commerce));
+                        Users UserProvider = CUsers.Instance.SearchUser(ObjectHeader.Provider);
+                        Users UserMerchant = CUsers.Instance.SearchUser(ObjectHeader.Commerce);
+                        if (UserMerchant == null)
+                        {
+                            LogManager.WriteLog(string.Format("Error el Comercio con identificaciòn {0} no se encuentra registrado", ObjectHeader.Commerce));
+                            return false;
+                        }
+
+                        if (UserProvider == null)
+                        {
+                            LogManager.WriteLog(string.Format("Error el Proveedor con identificaciòn {0} no se encuentra registrado", ObjectHeader.Commerce));
+                            return false;
+                        }
+
                         Orders ObjectOrders = new Orders();
                         ObjectOrders.OrderNumber = ObjectHeader.PurchaseOrderNumber;
-                        ObjectOrders.MaxDeliveryDate = Convert.ToDateTime(ObjectHeader.DeadLine);
+                        ObjectOrders.MaxDeliveryDate = ConvertDateTimeEdi(ObjectHeader.DeadLine);
                         ObjectOrders.OrderType = ObjectHeader.TypeOfPurchaseOrder;
                         ObjectOrders.FkStatus_Identifier = 1;
                         ObjectOrders.FkUsers_Merchant_Identifier = UserMerchant.PkIdentifier;
                         ObjectOrders.FkUsers_Manufacturer_Identifier = UserProvider.PkIdentifier;
-                        ObjectOrders.LastChangeDate = Convert.ToDateTime(ObjectHeader.DateOfIssue);
+                        ObjectOrders.LastChangeDate = ConvertDateTimeEdi(ObjectHeader.DateOfIssue);
                         ObjectOrders.ProcessingDate = DateTime.Now;
                         if (COrders.Instance.SaveOrders(ObjectOrders))
                         {
@@ -182,8 +194,8 @@ namespace Managers
                                 OrdersProducts Product = new OrdersProducts();
                                 Product.FkOrders_Identifier = ObjectOrders.PkIdentifier;
                                 Product.Description = Detail.Description;
-                                Product.Code = Convert.ToInt64(Detail.ProductEAN);
-                                Product.SplitQuantity = Convert.ToDecimal(Detail.QuantityPerPointOfSale);
+                                Product.Code = Detail.ProductEAN;
+                                Product.SplitQuantity = Convert.ToInt64(Detail.QuantityPerPointOfSale);
                                 Product.Line = Convert.ToInt32(Detail.Line);
                                 if (!COrdersProducts.Instance.SaveOrdersProducts(Product))
                                 {
@@ -237,18 +249,18 @@ namespace Managers
                 {
                     try
                     {
-                        Users UserProvider = CUsers.Instance.SearchUser(Convert.ToInt64(ObjectHeader.Provider));
-                        Users UserMerchant = CUsers.Instance.SearchUser(Convert.ToInt64(ObjectHeader.Commerce));
+                        Users UserProvider = CUsers.Instance.SearchUser(ObjectHeader.Provider);
+                        Users UserMerchant = CUsers.Instance.SearchUser(ObjectHeader.Commerce);
                         Advices ObjectAdvicesProducts = new Advices();
                         ObjectAdvicesProducts.FkUsers_Merchant_Identifier = UserMerchant.PkIdentifier;
                         ObjectAdvicesProducts.FkUsers_Manufacturer_Identifier = UserProvider.PkIdentifier;
 
                         ObjectAdvicesProducts.AdviceNumber = ObjectHeader.ReceiptWarningNumber;
                         ObjectAdvicesProducts.Orders_OrderNumber = ObjectHeader.PurchaseOrderNumber;
-                        ObjectAdvicesProducts.ReceiptDate = Convert.ToDateTime(ObjectHeader.DeadLine);
+                        ObjectAdvicesProducts.ReceiptDate = ConvertDateTimeEdi(ObjectHeader.DeadLine);
                         ObjectAdvicesProducts.ManualAdvise = false;
                         ObjectAdvicesProducts.ProcessingDate = DateTime.Now;
-                        Centres Center = CCentres.Instance.SearchCentresForId(Convert.ToInt64(ObjectHeader.MerchandiseDeliverySite));
+                        Centres Center = CCentres.Instance.SearchCentresForId(ObjectHeader.MerchandiseDeliverySite);
                         if (Center == null)
                         {
                             LogManager.WriteLog("Error durante el procesamiento del RecAdv el centro enviado no existe  " + ObjectHeader.MerchandiseDeliverySite);
@@ -260,11 +272,11 @@ namespace Managers
                         {
                             foreach (var item in ObjectHeader.Details)
                             {
-                                AdvicesProducts ObjectAdvicesProduct = new AdvicesProducts();                             
+                                AdvicesProducts ObjectAdvicesProduct = new AdvicesProducts();
                                 ObjectAdvicesProduct.FkAdvices_Identifier = ObjectAdvicesProducts.PkIdentifier;
-                                ObjectAdvicesProduct.Code = Convert.ToInt64(item.ProductEAN);
-                                ObjectAdvicesProduct.Description = item.Description;
-                                ObjectAdvicesProduct.ReceivedAndAcceptedQuantity = Convert.ToDecimal(item.AmountReceivedAccepted);
+                                ObjectAdvicesProduct.Code = item.ProductEAN;
+                                //ObjectAdvicesProduct.Description = item.Description;
+                                ObjectAdvicesProduct.ReceivedAndAcceptedQuantity = Convert.ToInt64(item.AmountReceivedAccepted);
                                 if (!CAdvicesProducts.Instance.SaveAdvicesProduct(ObjectAdvicesProduct))
                                 {
                                     LogManager.WriteLog("Error al tratar de guardar elemento AdvicesProducts: " + JsonConvert.SerializeObject(ObjectAdvicesProduct));
@@ -328,7 +340,7 @@ namespace Managers
                 XmlDocument ArchiveXML = new Manager().ConvertEdiToXML(PathFile);
                 HeaderElement ObjectHeader = new HeaderElement();
                 string LineBGM = string.Empty;
-                bool ValidityFirstHierarchy = false;
+                bool ValidityFirstHierarchy = false; 
                 bool ValiditySecondHierarchy = false;
                 List<string> ListAmountRequested = new List<string>();
                 List<DetailElement> ListDetailElement = new List<DetailElement>();
@@ -428,7 +440,7 @@ namespace Managers
                             {
                                 DetailElement DetailElement = new DetailElement();
                                 DetailElement.ProductEAN = ArchiveXML.GetElementsByTagName("LIN").Item(i).Attributes[2].Value;
-                                DetailElement.Line = ArchiveXML.GetElementsByTagName("LIN").Item(i).Attributes[1].Value;
+                                DetailElement.Line = ArchiveXML.GetElementsByTagName("LIN").Item(i).Attributes[0].Value;
                                 DetailElement.AmountRequested = ListAmountRequested[i];
 
                                 string Loc7 = string.Empty;
@@ -449,8 +461,9 @@ namespace Managers
                             DetailElement DetailElement = new DetailElement();
                             DetailElement.ProductEAN = ArchiveXML.GetElementsByTagName("LIN").Item(i).Attributes[2].Value;
                             DetailElement.AmountRequested = ListAmountRequested[i];
+                            DetailElement.Line = ArchiveXML.GetElementsByTagName("LIN").Item(i).Attributes[0].Value;
                             DetailElement.PointSale = ObjectHeader.MerchandiseDeliverySite;
-                            DetailElement.QuantityPerPointOfSale = ListAmountRequested[i];
+                            DetailElement.QuantityPerPointOfSale = ListAmountRequested[i].Replace("'", "");
                             if (!string.IsNullOrEmpty(DetailElement.ProductEAN) && !string.IsNullOrEmpty(DetailElement.AmountRequested) && !string.IsNullOrEmpty(DetailElement.PointSale) && !string.IsNullOrEmpty(DetailElement.QuantityPerPointOfSale))
                                 ListDetailElement.Add(DetailElement);
                         }
@@ -572,6 +585,30 @@ namespace Managers
                 LogManager.WriteLog("Se presento error durante la lectura del archivo: " + ex.Message);
                 return new HeaderElement();
             }
+        }
+
+        public DateTime ConvertDateTimeEdi(string Date)
+        {
+
+            DateTime dt = new DateTime();
+            try
+            {
+                dt = Convert.ToDateTime(Date);
+            }
+            catch
+            {
+                try
+                {
+                    dt = DateTime.ParseExact(Date, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+                }
+                catch
+                {
+                    dt = DateTime.ParseExact(Date, "ddMMyyyy", System.Globalization.CultureInfo.CurrentUICulture);
+                }
+
+            }
+
+            return dt;
         }
 
         #endregion Methods

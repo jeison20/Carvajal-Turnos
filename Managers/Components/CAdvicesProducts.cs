@@ -27,23 +27,21 @@ namespace Managers.Components
 
         public bool SaveAdvicesProduct(AdvicesProducts AdvicesProduct)
         {
-            DbContextTransaction dbTx = Instance.Database.BeginTransaction();
             try
             {
-                Instance.Database.BeginTransaction();
+
                 AdvicesProducts.Add(AdvicesProduct);
-                Instance.SaveChanges();
-                dbTx.Commit();
+                Instance.SaveChanges();        
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                dbTx.Rollback();
+                LogManager.WriteLog("Error en el metodo SaveAdvicesProduct" + ex.Message);
                 return false;
             }
         }
 
-        public List<AdvicesProducts> SearchAdvicesProducts(int FkAdvices_Identifier)
+        public List<AdvicesProducts> SearchAdvicesProducts(long FkAdvices_Identifier)
         {
             try
             {

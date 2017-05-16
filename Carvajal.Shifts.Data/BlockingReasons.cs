@@ -6,22 +6,23 @@ namespace Carvajal.Shifts.Data
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Status
+    public partial class BlockingReasons
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Status()
+        public BlockingReasons()
         {
-            Orders = new HashSet<Orders>();
+            Exceptions = new HashSet<Exceptions>();
         }
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int PKIdentifier { get; set; }
+        [StringLength(3)]
+        public string PkIdentifier { get; set; }
 
+        [Required]
         [StringLength(35)]
         public string Name { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Orders> Orders { get; set; }
+        public virtual ICollection<Exceptions> Exceptions { get; set; }
     }
 }

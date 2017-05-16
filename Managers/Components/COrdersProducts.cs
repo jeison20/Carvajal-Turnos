@@ -1,4 +1,5 @@
 ﻿using Carvajal.Shifts.Data;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -24,23 +25,23 @@ namespace Managers.Components
 
         public bool SaveOrdersProducts(OrdersProducts OrderProduct)
         {
-            DbContextTransaction dbTx = Instance.Database.BeginTransaction();
+
             try
             {
-                Instance.Database.BeginTransaction();
+
                 OrdersProducts.Add(OrderProduct);
                 Instance.SaveChanges();
-                dbTx.Commit();
+
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                dbTx.Rollback();
+                LogManager.WriteLog("Error en el metodo SaveOrdersProducts " + ex.Message);
                 return false;
             }
         }
 
-        public List<OrdersProducts> SearchOrdersProducts(int OrderNumber)
+        public List<OrdersProducts> SearchOrdersProducts(long OrderNumber)
         {
             try
             {

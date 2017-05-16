@@ -1,10 +1,6 @@
 ﻿using Carvajal.Shifts.Data;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Managers.Components
 {
@@ -27,29 +23,26 @@ namespace Managers.Components
 
         public bool SaveUser(Users User)
         {
-            DbContextTransaction dbTx = Instance.Database.BeginTransaction();
             try
             {
-                Instance.Database.BeginTransaction();
                 Users.Add(User);
                 Instance.SaveChanges();
-                dbTx.Commit();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                dbTx.Rollback();
+                LogManager.WriteLog("Error en el metodo SaveUser " + ex.Message);
                 return false;
             }
         }
 
-        public Users SearchUser(long IdentificationNumber)
+        public Users SearchUser(string IdentificationNumber)
         {
             try
             {
                 return Instance.Users.FirstOrDefault(c => c.PkIdentifier == IdentificationNumber);
             }
-            catch
+            catch (Exception ex)
             {
                 return null;
             }

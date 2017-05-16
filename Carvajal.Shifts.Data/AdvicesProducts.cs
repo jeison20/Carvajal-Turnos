@@ -9,17 +9,14 @@ namespace Carvajal.Shifts.Data
     public partial class AdvicesProducts
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int PkIdentifier { get; set; }
+        public long PkIdentifier { get; set; }
 
-        public int? FkAdvices_Identifier { get; set; }
-
-        public long? Code { get; set; }
+        public long? FkAdvices_Identifier { get; set; }
 
         [StringLength(35)]
-        public string Description { get; set; }
+        public string Code { get; set; }
 
-        public decimal? ReceivedAndAcceptedQuantity { get; set; }
+        public long? ReceivedAndAcceptedQuantity { get; set; }
 
         public virtual Advices Advices { get; set; }
     }

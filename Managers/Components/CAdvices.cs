@@ -27,18 +27,17 @@ namespace Managers.Components
 
         public bool SaveAdvices(Advices Advice)
         {
-            DbContextTransaction dbTx = Instance.Database.BeginTransaction();
             try
             {
-                Instance.Database.BeginTransaction();
                 Advices.Add(Advice);
                 Instance.SaveChanges();
-                dbTx.Commit();
+
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                dbTx.Rollback();
+                LogManager.WriteLog("Error en el metodo SaveAdvices " + ex.Message);
+
                 return false;
             }
         }
