@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Turns.TextFile", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carvajal.Turns.Data", "Carvajal.Shifts.Data\Carvajal.Turns.Data.csproj", "{AC6E6726-2494-41E0-B404-22AA852473F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.Carvajal.Turns.Service", "UnitTest.Carvajal.Turns.Service\UnitTest.Carvajal.Turns.Service.csproj", "{1D6681E1-3491-4EB7-B770-02F84F8D4CF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{AC6E6726-2494-41E0-B404-22AA852473F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC6E6726-2494-41E0-B404-22AA852473F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC6E6726-2494-41E0-B404-22AA852473F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D6681E1-3491-4EB7-B770-02F84F8D4CF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D6681E1-3491-4EB7-B770-02F84F8D4CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D6681E1-3491-4EB7-B770-02F84F8D4CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D6681E1-3491-4EB7-B770-02F84F8D4CF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

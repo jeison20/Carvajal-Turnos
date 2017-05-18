@@ -52,6 +52,9 @@ namespace Carvajal.Shifts.Data
         [Column(TypeName = "smalldatetime")]
         public DateTime? LastChangeDate { get; set; }
 
+        [StringLength(1)]
+        public string Status { get; set; }
+
         public virtual Users Users { get; set; }
 
         public virtual Users Users1 { get; set; }

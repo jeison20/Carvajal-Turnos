@@ -69,6 +69,7 @@
     <Compile Include="Components\CCentres.cs" />
     <Compile Include="Components\COrders.cs" />
     <Compile Include="Components\COrdersProducts.cs" />
+    <Compile Include="Components\CTurns.cs" />
     <Compile Include="Components\CUsers.cs" />
     <Compile Include="LogManager.cs" />
     <Compile Include="Manager.cs" />

@@ -19,10 +19,10 @@ namespace Managers
         #region Methods
 
         /// <summary>
-        ///
+        ///Metodo encargado de convertir el .Edi a xml
         /// </summary>
-        /// <param name="UrlArchiveEdi"></param>
-        /// <returns></returns>
+        /// <param name="UrlArchiveEdi">ruta fisica donde se encuentra el archivo a convertir </param>
+        /// <returns>retorna un XmlDocument si la operacion fue exitosa en caso contrario retorna un null</returns>
         public XmlDocument ConvertEdiToXML(string UrlArchiveEdi)
         {
             if (File.Exists(UrlArchiveEdi))
@@ -49,7 +49,7 @@ namespace Managers
         /// Metodo que autentica archivo con MD5 y retorna un string
         /// </summary>
         /// <param name="Route">ruta que incluye nombre y extension del archivo donde se encuentra el archivo ha autenticar</param>
-        /// <returns>retorna hash del archivo autenticado </returns>
+        /// <returns>retorna hash del archivo autenticado si el proceso fue exitoso en caso contrario retorna un string vacio </returns>
         public string AuthenticArchiveMD5(string Route)
         {
             if (File.Exists(Route))
@@ -68,37 +68,70 @@ namespace Managers
                 return "";
         }
 
+        /// <summary>
+        /// Metodo que permite subir un archivo al sftp 
+        /// </summary>
+        /// <param name="NameFile">Nombre del archivo</param>
+        /// <param name="File">Archivo convertido a stream </param>
+        /// <param name="IdCommerce">Id unico del comercio</param>
+        /// <param name="UrlFtpDestination">Url del lugar donde se guardara el archivo</param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
         public bool UploadFile(string NameFile, Stream File, string IdCommerce, string UrlFtpDestination)
         {
             ISftpAccesObject = new SftpAcess();
             return ISftpAccesObject.Uploadfile(NameFile, File, IdCommerce, UrlFtpDestination);
         }
 
+        /// <summary>
+        /// Metodo que permite descargar archivos del sftp
+        /// </summary>
+        /// <param name="UrlSourceFtp">url incluyendo el nombre y extencion del archivo a descargar</param>
+        /// <param name="UrlLocalDestination">url de la ruta donde se descargara el archivo </param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
         public bool DownloadFile(string UrlSourceFtp, string UrlLocalDestination)
         {
             ISftpAccesObject = new SftpAcess();
             return ISftpAccesObject.DownloadFile(UrlSourceFtp, UrlLocalDestination);
         }
-
+        /// <summary>
+        /// Metodo que permite descargar los archivos de una carpeta especifica
+        /// </summary>
+        /// <param name="UrlSourceFtp">url de la carpeta en sftp</param>
+        /// <param name="UrlLocalDestination">Ruta fisica donde se guardaran los archivos</param>
+        /// <param name="ErrorListing">lista de archivos que presentaron errores durante el proceso de descarga</param>
+        /// <returns>Retorna una lista con los archivos que se descargaron exitosamente en caso de no descargar ninguno retorna una lista vacia</returns>
         public List<string> DownloadFilesByFolder(string UrlSourceFtp, string UrlLocalDestination, out List<string> ErrorListing)
         {
             ISftpAccesObject = new SftpAcess();
             ErrorListing = new List<string>();
             return ISftpAccesObject.DownloadFilesByFolder(UrlSourceFtp, UrlLocalDestination, out ErrorListing);
         }
-
+        /// <summary>
+        /// /Metodo que permite crear una carpeta en una ruta en el sftp
+        /// </summary>
+        /// <param name="NameFolder">Nombre de la carpeta que se creara</param>
+        /// <param name="UrlDirectory">direccion donde se creara la carpeta</param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
         public bool CreateFTPFolder(string NameFolder, string UrlDirectory)
         {
             ISftpAccesObject = new SftpAcess();
             return ISftpAccesObject.CreateFTPFolder(NameFolder, UrlDirectory);
         }
-
+        /// <summary>
+        /// Metodo que permite eliminar un archivo en el sftp
+        /// </summary>
+        /// <param name="UrlOrigenFtp">ruta completa </param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
         public bool DeleteFile(string UrlOrigenFtp)
         {
             ISftpAccesObject = new SftpAcess();
             return ISftpAccesObject.DeleteFile(UrlOrigenFtp);
         }
-
+        /// <summary>
+        /// Metodo que valida la estructura del archivo  edi
+        /// </summary>
+        /// <param name="Path">ruta  y nombre  del archivo con su respectiva extension </param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
         public bool ValidFileStructure(string Path)
         {
             try
@@ -152,7 +185,11 @@ namespace Managers
                 return false;
             }
         }
-
+        /// <summary>
+        /// Metodo que guarda la informacion del archivo orden de pedido Edi
+        /// </summary>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
         public bool SaveDataEDI(string PathFile)
         {
             try
@@ -236,7 +273,11 @@ namespace Managers
                 return false;
             }
         }
-
+        /// <summary>
+        /// Metodo que guarda la informacion del archivo Recibo de pedido Edi 
+        /// </summary>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
         public bool SaveDataRecAdvEDI(string PathFile)
         {
             try
@@ -244,6 +285,20 @@ namespace Managers
                 HeaderElement ObjectHeader = new HeaderElement();
 
                 ObjectHeader = ReadRecAdvEdi(PathFile);
+
+                Orders AssignedOrder = COrders.Instance.SearchOrder(ObjectHeader.PurchaseOrderNumber);
+                if (AssignedOrder == null)
+                {
+                    LogManager.WriteLog("Error no existe una orden para el numero de orden " + ObjectHeader.PurchaseOrderNumber + " en el archivo " + Path.GetFileName(PathFile));
+                    return false;
+                }
+
+                Turns Turn = CTurns.Instance.SearchTurnsForOrderActive(ObjectHeader.PurchaseOrderNumber);
+                if (Turn == null)
+                {
+                    LogManager.WriteLog("Error no existe un turno para el numero de orden " + ObjectHeader.PurchaseOrderNumber + " en el archivo " + Path.GetFileName(PathFile));
+                    return false;
+                }
 
                 if (ObjectHeader.Details.Count > 0 && !string.IsNullOrEmpty(ObjectHeader.PurchaseOrderNumber) && !string.IsNullOrEmpty(ObjectHeader.ReceiptWarningNumber) && !string.IsNullOrEmpty(ObjectHeader.DeadLine) && !string.IsNullOrEmpty(ObjectHeader.MerchandiseDeliverySite))
                 {
@@ -316,7 +371,12 @@ namespace Managers
                 return false;
             }
         }
-
+        /// <summary>
+        /// Metodo que completa con ceros a la derecha un texto 
+        /// </summary>
+        /// <param name="Length">Extencion maxima de la cadena</param>
+        /// <param name="Line">cararcteres que van a la izquierda de los ceros</param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
         public string CompleteZeros(int Length, string Line)
         {
             string CountZeros = string.Empty;
@@ -325,13 +385,17 @@ namespace Managers
                 CountZeros += "0";
             }
             if (Length > Line.Length)
-                CountZeros = CountZeros.Substring(0, CountZeros.Length - Line.Length);
+                CountZeros = CountZeros.Substring(0, CountZeros.Length - Line.Length) + Line;
             else
                 CountZeros = Line;
 
             return CountZeros;
         }
-
+        /// <summary>
+        /// Metodo que lee y extrae la informacion del archivo edi de una orden de pedido
+        /// </summary>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna un objeto HeaderElement lleno si el proceso fue exitoso en caso contrario retorna un objeto vacio</returns>
         public HeaderElement ReadOrderEdi(string PathFile)
         {
             try
@@ -340,7 +404,7 @@ namespace Managers
                 XmlDocument ArchiveXML = new Manager().ConvertEdiToXML(PathFile);
                 HeaderElement ObjectHeader = new HeaderElement();
                 string LineBGM = string.Empty;
-                bool ValidityFirstHierarchy = false; 
+                bool ValidityFirstHierarchy = false;
                 bool ValiditySecondHierarchy = false;
                 List<string> ListAmountRequested = new List<string>();
                 List<DetailElement> ListDetailElement = new List<DetailElement>();
@@ -478,17 +542,17 @@ namespace Managers
                 return new HeaderElement();
             }
         }
-
+        /// <summary>
+        /// Metodo que lee y extrae la informacion del archivo edi de una Recibo de pedido
+        /// </summary>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna un objeto HeaderElement lleno si el proceso fue exitoso en caso contrario retorna un objeto vacio </returns>
         public HeaderElement ReadRecAdvEdi(string PathFile)
         {
             try
             {
                 HeaderElement ObjectHeader = new HeaderElement();
                 List<DetailElement> ListDetail = new List<DetailElement>();
-
-                string ReplaceNewLine = File.ReadAllText(PathFile);
-                ReplaceNewLine = ReplaceNewLine.Replace("'", System.Environment.NewLine);
-                File.WriteAllText(PathFile, ReplaceNewLine);
 
                 IEnumerable<string> FullFile = File.ReadLines(PathFile);
                 string LineBGM = string.Empty;
@@ -527,7 +591,7 @@ namespace Managers
 
                 string LineReff = FullFile.FirstOrDefault(line => line.Contains("RFF+ON"));
                 LineReff = LineReff.Split(':')[1];
-                ObjectHeader.PurchaseOrderNumber = LineReff;
+                ObjectHeader.PurchaseOrderNumber = LineReff.Replace("'", "");
 
                 List<string> ListCountLinesLIN = FullFile
                        .Where(line => line.Contains("LIN+")).ToList();
@@ -563,7 +627,7 @@ namespace Managers
                             ListDetailElementIMD = ListDetailElementIMD[3].Split(':');
                             DetailElementIMD = ListDetailElementIMD[ListDetailElementIMD.Length - 1];
                         }
-                        Detail.Description = DetailElementIMD;
+                        Detail.Description = DetailElementIMD.Replace("'", "");
                     }
                     if (ListDetailElementLin.Where(c => c.Contains("QTY+46")).Count() > 0)
                     {
@@ -572,8 +636,10 @@ namespace Managers
                     if (ListDetailElementLin.Where(c => c.Contains("QTY+194")).Count() > 0)
                     {
                         Detail.AmountReceivedAccepted = ListDetailElementLin.FirstOrDefault(c => c.Contains("QTY+194")).Split(':')[1];
+                        Detail.AmountReceivedAccepted = Detail.AmountReceivedAccepted.Replace(".", ",");
+                        Detail.AmountReceivedAccepted = Convert.ToDouble(Detail.AmountReceivedAccepted).ToString();
                     }
-                    if (!string.IsNullOrEmpty(Detail.ProductEAN) && !string.IsNullOrEmpty(Detail.Description) && !string.IsNullOrEmpty(Detail.DeliveredQuantity) && !string.IsNullOrEmpty(Detail.AmountReceivedAccepted))
+                    if (!string.IsNullOrEmpty(Detail.ProductEAN) && !string.IsNullOrEmpty(Detail.Description) && !string.IsNullOrEmpty(Detail.AmountReceivedAccepted))
                         ListDetail.Add(Detail);
                 }
 
@@ -586,10 +652,13 @@ namespace Managers
                 return new HeaderElement();
             }
         }
-
+        /// <summary>
+        /// Metodo para realizar conversion de fechas contenidas en los archivos edi
+        /// </summary>
+        /// <param name="Date">fecha a la que se desea hacer la conversion</param>
+        /// <returns>datetime</returns>
         public DateTime ConvertDateTimeEdi(string Date)
         {
-
             DateTime dt = new DateTime();
             try
             {
@@ -603,9 +672,15 @@ namespace Managers
                 }
                 catch
                 {
-                    dt = DateTime.ParseExact(Date, "ddMMyyyy", System.Globalization.CultureInfo.CurrentUICulture);
+                    try
+                    {
+                        dt = DateTime.ParseExact(Date, "ddMMyyyy", System.Globalization.CultureInfo.CurrentUICulture);
+                    }
+                    catch (Exception)
+                    {
+                        dt = DateTime.ParseExact(Date, "yyyyMMddhhmm", System.Globalization.CultureInfo.InvariantCulture);
+                    }
                 }
-
             }
 
             return dt;
