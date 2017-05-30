@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using Carvajal.Turns.CodeResponses;
 
 namespace Managers.Components
 {
-    public class COrdersProducts : Model
+    public class COrdersProducts : ModelContainer
     {
         private static COrdersProducts _Instance = new COrdersProducts();
 
@@ -36,7 +37,7 @@ namespace Managers.Components
             }
             catch (Exception ex)
             {
-                LogManager.WriteLog("Error en el metodo SaveOrdersProducts " + ex.Message);
+                LogManager.WriteLog("0","0",Responses.A0+"SaveOrdersProducts: " + ex.Message);
                 return false;
             }
         }

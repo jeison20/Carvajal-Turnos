@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using Carvajal.Turns.CodeResponses;
 
 namespace Managers.Components
 {
-    public class CCentres : Model
+    public class CCentres : ModelContainer
     {
         private static CCentres _Instance = new CCentres();
 
@@ -36,7 +37,7 @@ namespace Managers.Components
             }
             catch (Exception ex)
             {
-                LogManager.WriteLog("Error en el metodo SaveCentres" + ex.Message);
+                LogManager.WriteLog(Center.FkUsers_Merchant_Identifier, "0", Responses.A0+"SaveCentres: " + ex.Message);
                 return false;
             }
         }
@@ -65,7 +66,7 @@ namespace Managers.Components
             }
         }
 
-        public bool DeleteAdvices(Centres Center)
+        public bool DeleteCenter(Centres Center)
         {
             try
             {

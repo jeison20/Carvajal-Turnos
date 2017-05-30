@@ -9,6 +9,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Xml;
 using TextFile;
+using System.Text;
+using Microsoft.VisualBasic.FileIO;
+using Carvajal.Turns.CodeResponses;
+
 
 namespace Managers
 {
@@ -50,7 +54,7 @@ namespace Managers
         /// </summary>
         /// <param name="Route">ruta que incluye nombre y extension del archivo donde se encuentra el archivo ha autenticar</param>
         /// <returns>retorna hash del archivo autenticado si el proceso fue exitoso en caso contrario retorna un string vacio </returns>
-        public string AuthenticArchiveMD5(string Route)
+        public string AuthenticArchiveMD5(string MerchantId, string Route)
         {
             if (File.Exists(Route))
             {
@@ -59,7 +63,7 @@ namespace Managers
                     using (var stream = File.OpenRead(Route))
                     {
                         string HashArchivo = Convert.ToBase64String(md5.ComputeHash(stream));
-                        LogManager.WriteLog(string.Format("El Archivo {0}  fue autenticado el hash correspondiente es {1}.", Path.GetFileName(Route), HashArchivo));
+                        LogManager.WriteLog(MerchantId, "0", String.Format(Responses.A3, Path.GetFileName(Route), HashArchivo));
                         return HashArchivo;
                     }
                 }
@@ -127,12 +131,88 @@ namespace Managers
             ISftpAccesObject = new SftpAcess();
             return ISftpAccesObject.DeleteFile(UrlOrigenFtp);
         }
+
+
+
+
+        public bool ValidCSVFileStructure(string PathRoute, string MerchantIdentifier, out int WrongRecords, out int TotalRecords)
+        {
+                
+            String Filename;
+            WrongRecords = 0; TotalRecords = 0;
+            using (TextFieldParser parser = new TextFieldParser(PathRoute))
+                {
+                    parser.TextFieldType = FieldType.Delimited;
+                    parser.SetDelimiters(",");
+                    parser.TrimWhiteSpace = true;
+                    parser.ReadLine(); //Omite la primera linea
+                    while (!parser.EndOfData)
+                    {
+                        string[] fieldRow = parser.ReadFields();
+                   // Aplica para Usuarios de Comercio: Administradores y Operadores de CE
+                    Filename = "Usuario_CO_" + MerchantIdentifier+"_";
+                    if (PathRoute.Contains(Filename))
+                    {
+                        TotalRecords++;
+                        // Puede tener 5 campos (minimos), 6 campos (Opcionales) u 8 (Maximo).
+                        if (!((fieldRow.Length ==5) || (fieldRow.Length == 6) || (fieldRow.Length == 8)))
+                        {
+                            if (fieldRow.Length == 7)
+                            {
+                                LogManager.WriteWarn(MerchantIdentifier, "0", Responses.M48 + "Responsable Centro" + Responses.M48_1);
+                            }
+                            else {
+                                LogManager.WriteWarn(MerchantIdentifier, "0", Responses.M65 + Path.GetFileName(PathRoute) + Responses.M65_1 + fieldRow.Length + "  debia ser 5, 6 o 8.");
+                                WrongRecords++;
+                            }
+                        }
+                    }
+                    Filename = "Usuario_FA_" + MerchantIdentifier + "_";
+                    if (PathRoute.Contains("Usuario_FA_"))
+                        {
+                            TotalRecords++;
+                        // Minimo pueden ser 10 campos, maximo 11,
+                        if (!((fieldRow.Length == 10) || (fieldRow.Length == 11)))
+                        {
+                            WrongRecords++;
+                            LogManager.WriteWarn(MerchantIdentifier, "0", Responses.M65 + Path.GetFileName(PathRoute) + Responses.M65_1 + fieldRow.Length + "  debia ser 10 o 11.");
+                        }
+                        }
+                    Filename = "Centro_" + MerchantIdentifier + "_";
+                    if (PathRoute.Contains(Filename))
+                    {
+                        TotalRecords++;
+                        // Minimo pueden ser 11 campos, maximo 16
+                        if ((fieldRow.Length < 11) || (fieldRow.Length > 16))
+                        {
+                            WrongRecords++;
+                            LogManager.WriteWarn(MerchantIdentifier, "0", Responses.M65 + Path.GetFileName(PathRoute) + Responses.M65_1 + fieldRow.Length + "  debia ser 11 a 16.");
+                        }
+                    }
+                    Filename = "Tiempo_" + MerchantIdentifier + "_";
+                    if (PathRoute.Contains("Tiempo_"))
+                        {
+                            TotalRecords++;
+                        // Tiene que ser 8 campos. Obligatorio.
+                        if (fieldRow.Length != 8)
+                        {
+                            WrongRecords++;
+                            LogManager.WriteWarn(MerchantIdentifier, "0", Responses.M65 + Path.GetFileName(PathRoute) + Responses.M65_1 + fieldRow.Length + "  debia ser 8.");
+                        }
+                        }
+
+                }
+                }
+            return  ((TotalRecords>0) && (TotalRecords > WrongRecords))? true: false;
+        
+        }
         /// <summary>
         /// Metodo que valida la estructura del archivo  edi
         /// </summary>
         /// <param name="Path">ruta  y nombre  del archivo con su respectiva extension </param>
+        /// <param name="MerchantIdentifier">Identificador de Comercio</param>
         /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
-        public bool ValidFileStructure(string Path)
+        public bool ValidEDIFileStructure(string Path, string MerchantIdentifier)
         {
             try
             {
@@ -141,37 +221,55 @@ namespace Managers
                 IEnumerable<string> FullFile = File.ReadLines(Path);
                 int LinesBGM = FullFile.Where(line => line.Contains("BGM+")).Count();
                 if (LinesBGM > 1 || LinesBGM < 1)
+                {
+                    LogManager.WriteError(MerchantIdentifier, "0", Responses.M47 + "BGM" + Responses.M47_1);
                     BitValidFileStructure = false;
+                }
 
                 if (BitValidFileStructure)
                 {
                     int LinesNAD = FullFile.Where(line => line.Contains("NAD+")).Count();
                     if (LinesNAD < 3)
+                    {
+                        LogManager.WriteError(MerchantIdentifier, "0", Responses.M47 + "NAD" + Responses.M47_1);
                         BitValidFileStructure = false;
+                    }
 
                     if (BitValidFileStructure)
                     {
                         int LinesDTM = FullFile.Where(line => line.Contains("DTM+")).Count();
                         if (LinesDTM < 1)
+                        {
+                            LogManager.WriteError(MerchantIdentifier, "0", Responses.M47 + "DTM" + Responses.M47_1);
                             BitValidFileStructure = false;
+                        }
 
                         if (BitValidFileStructure)
                         {
                             int LinesLIN = FullFile.Where(line => line.Contains("LIN+")).Count();
                             if (LinesLIN < 1)
+                            {
+                                LogManager.WriteError(MerchantIdentifier, "0", Responses.M47 + "LIN" + Responses.M47_1);
                                 BitValidFileStructure = false;
+                            }
 
                             if (BitValidFileStructure)
                             {
                                 int LinesQTY = FullFile.Where(line => line.Contains("QTY+")).Count();
                                 if (LinesQTY < 1)
+                                {
+                                    LogManager.WriteError(MerchantIdentifier, "0", Responses.M47 + "QTY" + Responses.M47_1);
                                     BitValidFileStructure = false;
+                                }
 
                                 if (BitValidFileStructure)
                                 {
                                     int LinesUNZ = FullFile.Where(line => line.Contains("UNZ")).Count();
                                     if (LinesUNZ < 1 || LinesUNZ > 1)
+                                    {
+                                        LogManager.WriteError(MerchantIdentifier, "0", Responses.M47 + "UNZ" + Responses.M47_1);
                                         BitValidFileStructure = false;
+                                    }
                                 }
                             }
                         }
@@ -188,30 +286,31 @@ namespace Managers
         /// <summary>
         /// Metodo que guarda la informacion del archivo orden de pedido Edi
         /// </summary>
+        /// <param name="MerchantIdentifier">Codigo del Comercio</param>
         /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
         /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
-        public bool SaveDataEDI(string PathFile)
+        public bool SaveDataOrdersEDI(string MerchantIdentifier, string PathFile)
         {
             try
             {
                 HeaderElement ObjectHeader = new HeaderElement();
-                ObjectHeader = ReadOrderEdi(PathFile);
+                ObjectHeader = ReadOrderEdi(MerchantIdentifier, PathFile);
 
                 if (ObjectHeader.Details.Count > 0 && !string.IsNullOrEmpty(ObjectHeader.PurchaseOrderNumber) && !string.IsNullOrEmpty(ObjectHeader.TypeOfPurchaseOrder) && !string.IsNullOrEmpty(ObjectHeader.DeadLine) && !string.IsNullOrEmpty(ObjectHeader.MerchandiseDeliverySite))
                 {
                     try
                     {
-                        Users UserProvider = CUsers.Instance.SearchUser(ObjectHeader.Provider);
+                       
                         Users UserMerchant = CUsers.Instance.SearchUser(ObjectHeader.Commerce);
                         if (UserMerchant == null)
                         {
-                            LogManager.WriteLog(string.Format("Error el Comercio con identificaciòn {0} no se encuentra registrado", ObjectHeader.Commerce));
+                            LogManager.WriteLog(MerchantIdentifier, ObjectHeader.PurchaseOrderNumber, Responses.M69+ObjectHeader.PurchaseOrderNumber+Responses.M67_1+ ObjectHeader.Commerce+Responses.M67_2);
                             return false;
                         }
-
+                        Users UserProvider = CUsers.Instance.SearchUser(ObjectHeader.Provider);
                         if (UserProvider == null)
                         {
-                            LogManager.WriteLog(string.Format("Error el Proveedor con identificaciòn {0} no se encuentra registrado", ObjectHeader.Commerce));
+                            LogManager.WriteLog(MerchantIdentifier, ObjectHeader.PurchaseOrderNumber, Responses.M69 + ObjectHeader.PurchaseOrderNumber + Responses.M58_1 + ObjectHeader.Provider + Responses.M58_2);
                             return false;
                         }
 
@@ -236,7 +335,7 @@ namespace Managers
                                 Product.Line = Convert.ToInt32(Detail.Line);
                                 if (!COrdersProducts.Instance.SaveOrdersProducts(Product))
                                 {
-                                    LogManager.WriteLog("Error al tratar de guardar elemento OrdersProducts: " + JsonConvert.SerializeObject(Product));
+                                    LogManager.WriteLog(MerchantIdentifier, ObjectHeader.PurchaseOrderNumber, Responses.A8 + JsonConvert.SerializeObject(Product));
                                     List<OrdersProducts> ListProductInserted = COrdersProducts.Instance.SearchOrdersProducts(ObjectOrders.PkIdentifier);
                                     foreach (var item in ListProductInserted)
                                     {
@@ -248,8 +347,8 @@ namespace Managers
                             }
                         }
                         else
-                        {
-                            LogManager.WriteLog("Error al tratar de guardar elemento Orders: " + JsonConvert.SerializeObject(ObjectOrders));
+                        {           
+                            LogManager.WriteLog(MerchantIdentifier, ObjectHeader.PurchaseOrderNumber, Responses.A12 + JsonConvert.SerializeObject(ObjectOrders));
                             return false;
                         }
 
@@ -257,46 +356,47 @@ namespace Managers
                     }
                     catch (Exception ex)
                     {
-                        LogManager.WriteLog("Error al durante el guarde de elemento Orders: " + ex.Message);
+                        LogManager.WriteLog(MerchantIdentifier, ObjectHeader.PurchaseOrderNumber, Responses.A12 +"."+ex.Message);
                         return false;
                     }
                 }
                 else
                 {
-                    LogManager.WriteLog("Se presento problemas con los datos obligatorios suministrados ");
+                    LogManager.WriteLog(MerchantIdentifier, ObjectHeader.PurchaseOrderNumber, Responses.A10);
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                LogManager.WriteLog(string.Format("Se generaron inconvenientes en el Guarde del archivo {0} " + ex.Message, Path.GetFileName(PathFile)));
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.A11 + Path.GetFileName(PathFile) + "." + ex.Message);
                 return false;
             }
         }
         /// <summary>
         /// Metodo que guarda la informacion del archivo Recibo de pedido Edi 
         /// </summary>
+        /// <param name="MerchantIdentifier">Codigo del Comercio</param>
         /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
         /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
-        public bool SaveDataRecAdvEDI(string PathFile)
+        public bool SaveDataRecAdvEDI(string MerchantIdentifier, string PathFile)
         {
             try
             {
                 HeaderElement ObjectHeader = new HeaderElement();
 
-                ObjectHeader = ReadRecAdvEdi(PathFile);
+                ObjectHeader = ReadRecAdvEdi(MerchantIdentifier, PathFile);
 
                 Orders AssignedOrder = COrders.Instance.SearchOrder(ObjectHeader.PurchaseOrderNumber);
                 if (AssignedOrder == null)
                 {
-                    LogManager.WriteLog("Error no existe una orden para el numero de orden " + ObjectHeader.PurchaseOrderNumber + " en el archivo " + Path.GetFileName(PathFile));
+                    LogManager.WriteLog(MerchantIdentifier, ObjectHeader.ReceiptWarningNumber, Responses.M66  + ObjectHeader.PurchaseOrderNumber + Responses.M66_1 + ObjectHeader.ReceiptWarningNumber);
                     return false;
                 }
 
                 Turns Turn = CTurns.Instance.SearchTurnsForOrderActive(ObjectHeader.PurchaseOrderNumber);
                 if (Turn == null)
                 {
-                    LogManager.WriteLog("Error no existe un turno para el numero de orden " + ObjectHeader.PurchaseOrderNumber + " en el archivo " + Path.GetFileName(PathFile));
+                    LogManager.WriteLog(MerchantIdentifier, ObjectHeader.ReceiptWarningNumber, Responses.M62+ ObjectHeader.PurchaseOrderNumber + Responses.M62_1);
                     return false;
                 }
 
@@ -305,7 +405,18 @@ namespace Managers
                     try
                     {
                         Users UserProvider = CUsers.Instance.SearchUser(ObjectHeader.Provider);
+                        if (UserProvider == null)
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, ObjectHeader.ReceiptWarningNumber, Responses.M58 + ObjectHeader.PurchaseOrderNumber + Responses.M58_1 + ObjectHeader.Provider + Responses.M58_2);
+                            return false;
+                        }
+
                         Users UserMerchant = CUsers.Instance.SearchUser(ObjectHeader.Commerce);
+                        if (UserMerchant == null)
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, ObjectHeader.ReceiptWarningNumber, Responses.M67 + ObjectHeader.ReceiptWarningNumber + Responses.M67_1 + ObjectHeader.Commerce + Responses.M67_2);
+                            return false;
+                        }
                         Advices ObjectAdvicesProducts = new Advices();
                         ObjectAdvicesProducts.FkUsers_Merchant_Identifier = UserMerchant.PkIdentifier;
                         ObjectAdvicesProducts.FkUsers_Manufacturer_Identifier = UserProvider.PkIdentifier;
@@ -315,10 +426,11 @@ namespace Managers
                         ObjectAdvicesProducts.ReceiptDate = ConvertDateTimeEdi(ObjectHeader.DeadLine);
                         ObjectAdvicesProducts.ManualAdvise = false;
                         ObjectAdvicesProducts.ProcessingDate = DateTime.Now;
+                        
                         Centres Center = CCentres.Instance.SearchCentresForId(ObjectHeader.MerchandiseDeliverySite);
                         if (Center == null)
                         {
-                            LogManager.WriteLog("Error durante el procesamiento del RecAdv el centro enviado no existe  " + ObjectHeader.MerchandiseDeliverySite);
+                            LogManager.WriteLog(MerchantIdentifier, ObjectHeader.ReceiptWarningNumber, Responses.M68 + ObjectHeader.ReceiptWarningNumber + Responses.M68_1 + ObjectHeader.MerchandiseDeliverySite + Responses.M68_2);
                             return false;
                         }
                         ObjectAdvicesProducts.FkCentres_Identifier = Center.PkIdentifier;
@@ -332,9 +444,10 @@ namespace Managers
                                 ObjectAdvicesProduct.Code = item.ProductEAN;
                                 //ObjectAdvicesProduct.Description = item.Description;
                                 ObjectAdvicesProduct.ReceivedAndAcceptedQuantity = Convert.ToInt64(item.AmountReceivedAccepted);
+                                //TODO Preguntar a Jeison Vargas porque se borran todos los productos o definirlo en los documentos.
                                 if (!CAdvicesProducts.Instance.SaveAdvicesProduct(ObjectAdvicesProduct))
                                 {
-                                    LogManager.WriteLog("Error al tratar de guardar elemento AdvicesProducts: " + JsonConvert.SerializeObject(ObjectAdvicesProduct));
+                                    LogManager.WriteLog(MerchantIdentifier, ObjectHeader.ReceiptWarningNumber, Responses.A7 + JsonConvert.SerializeObject(ObjectAdvicesProduct));
                                     List<AdvicesProducts> ListProductInserted = CAdvicesProducts.Instance.SearchAdvicesProducts(ObjectAdvicesProducts.PkIdentifier);
                                     foreach (var itemProductInsert in ListProductInserted)
                                     {
@@ -347,7 +460,7 @@ namespace Managers
                         }
                         else
                         {
-                            LogManager.WriteLog("Error al tratar de guardar elemento Advices: " + JsonConvert.SerializeObject(ObjectAdvicesProducts));
+                            LogManager.WriteLog(MerchantIdentifier, ObjectHeader.ReceiptWarningNumber, Responses.A9 +JsonConvert.SerializeObject(ObjectAdvicesProducts));
                             return false;
                         }
 
@@ -355,19 +468,180 @@ namespace Managers
                     }
                     catch (Exception ex)
                     {
-                        LogManager.WriteLog("Error  durante el guarde del RecAdv " + ex.Message);
+                        LogManager.WriteLog(MerchantIdentifier, ObjectHeader.ReceiptWarningNumber, Responses.A9 +"."+ ex.Message);
                         return false;
                     }
                 }
                 else
                 {
-                    LogManager.WriteLog("Se presento problemas con los datos obligatorios suministrados ");
+                    LogManager.WriteLog(MerchantIdentifier, ObjectHeader.ReceiptWarningNumber, Responses.A10);
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                LogManager.WriteLog(string.Format("Se generaron inconvenientes en el procesamiento RecAdv del archivo {0} " + ex.Message, Path.GetFileName(PathFile)));
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.A11+ Path.GetFileName(PathFile)+"."+ex.Message);
+                return false;
+            }
+        }
+        /// <summary>
+        /// Metodo que guarda la informacion del archivo usuarios de Comercio
+        /// </summary>
+        /// <param name="MerchantIdentifier">Codigo del Comercio</param>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
+        public bool SaveDataMerchantUsersCSV(string MerchantIdentifier, string PathFile)   
+        {
+            try
+            {
+                int WrongRecords, TotalRecords, CounterUsers=0;
+                List<Users> MerchantUser = new List<Users>();
+                 MerchantUser = ReadMerchantUser(MerchantIdentifier, PathFile, out WrongRecords, out TotalRecords);
+                try
+                {
+                    foreach (Users newUser in MerchantUser)
+                    {
+                        
+                        if (!CUsers.Instance.SaveUser(newUser))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, "0", Responses.A18 + newUser.PkIdentifier);
+                            return false;
+                        }
+                        CounterUsers++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.WriteLog(MerchantIdentifier, "0", Responses.A19 + ex.Message);
+                    return false;
+                }
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.M51 + CounterUsers + Responses.M51_1);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.A17 + Path.GetFileName(PathFile) + ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Metodo que guarda la informacion del archivo Fabricante de Comercio
+        /// </summary>
+        /// <param name="MerchantIdentifier">Codigo del Comercio</param>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
+        public bool SaveDataManufacturerUsersCSV(string MerchantIdentifier, string PathFile)
+        {
+            try
+            {
+                int WrongRecords, TotalRecords, CounterUsers=0;
+                List<Companies> ManufacturerUser = new List<Companies>();
+                ManufacturerUser = ReadManufacturerUser(MerchantIdentifier, PathFile, out WrongRecords, out TotalRecords);
+                try
+                {
+                    Companies newManufacturerUser = new Companies();
+                    foreach (Companies newUser in ManufacturerUser)
+                    {    
+                      if (!CCompanies.Instance.SaveCompanies(newUser))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, "0", Responses.A15 + newUser.PkIdentifier);
+                            return false;
+                        }
+                        CounterUsers++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.WriteLog(MerchantIdentifier, "0", Responses.A16 + ex.Message);
+                    return false;
+                }
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.M51 + CounterUsers + Responses.M51_1);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.A14 + Path.GetFileName(PathFile)+"."+ex.Message);
+                return false;
+            }
+        }
+        /// <summary>
+        /// Metodo que guarda la informacion de los Centros de Entrega
+        /// </summary>
+        /// <param name="MerchantIdentifier">Codigo del Comercio</param>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
+        public bool SaveDataCentreCSV(string MerchantIdentifier, string PathFile)
+        {
+            try
+            {
+                int WrongRecords, TotalRecords, CounterCentre=0;
+                List<Centres> CentreList = new List<Centres>();
+                CentreList = ReadCentre(MerchantIdentifier, PathFile, out WrongRecords,out TotalRecords);
+                try
+                {
+                    Centres newCentreToAdd = new Centres();
+                    foreach (Centres newCentre in CentreList)
+                    {
+                        if (!CCentres.Instance.SaveCentres(newCentre))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, "0", Responses.A22 + newCentreToAdd.PkIdentifier);
+                            return false;
+                        }
+                        CounterCentre++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.WriteLog(MerchantIdentifier, "0", Responses.A23 + ex.Message);
+                    return false;
+                }
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.M51 + CounterCentre + Responses.M51_1);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.A21 + Path.GetFileName(PathFile) + "." + ex.Message);
+                return false;
+            }
+        }
+        /// <summary>
+        /// Metodo que guarda la informacion de los Tiempos de Descarga
+        /// </summary>
+        /// <param name="MerchantIdentifier">Codigo del Comercio</param>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
+        public bool SaveDataUnloadingTimeCSV(string MerchantIdentifier, string PathFile)
+        {
+            try
+            {
+                int WrongRecords = 0, TotalRecords = 0, CounterTime=0;
+                List<UnloadingTime> UnloadingTimeList = new List<UnloadingTime>();
+                UnloadingTimeList = ReadUnloadingTime(MerchantIdentifier, PathFile, out WrongRecords, out TotalRecords);
+                try
+                {
+                    foreach (UnloadingTime NewUnloadingTime in UnloadingTimeList)
+                    {
+                        if (!CUnloadingTime.Instance.SaveUnloadingTime(NewUnloadingTime))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, NewUnloadingTime.FkCentres_Identifier, Responses.A26+ NewUnloadingTime.FkCentres_Identifier);
+                            return false;
+                        }
+                        CounterTime++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.WriteLog(MerchantIdentifier, "0",
+                                Responses.A27 + ex.Message);
+                    return false;
+                }
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.M51 + CounterTime + Responses.M51_1);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogManager.WriteLog(MerchantIdentifier, "0",Responses.A25 + Path.GetFileName(PathFile) + "." + ex.Message);
                 return false;
             }
         }
@@ -391,12 +665,24 @@ namespace Managers
 
             return CountZeros;
         }
+
+        /// <summary>
+        /// Limita la cantidad de caracteres de un texto 
+        /// </summary>
+        /// <param name="Length">Extencion maxima de la cadena</param>
+        /// <param name="Line">cararcteres que van a la izquierda de los ceros</param>
+        /// <returns>retorna true si el proceso fue exitoso en caso contrario false</returns>
+        string NormalizeLength(string value, int maxLength)
+        {
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+        }
         /// <summary>
         /// Metodo que lee y extrae la informacion del archivo edi de una orden de pedido
         /// </summary>
+        ///  <param name="MerchantIdentifier">Codigo del Comercio</param>
         /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
         /// <returns>retorna un objeto HeaderElement lleno si el proceso fue exitoso en caso contrario retorna un objeto vacio</returns>
-        public HeaderElement ReadOrderEdi(string PathFile)
+        public HeaderElement ReadOrderEdi(string MerchantIdentifier, string PathFile)
         {
             try
             {
@@ -538,16 +824,18 @@ namespace Managers
             }
             catch (Exception ex)
             {
-                LogManager.WriteLog("Errores durante la lectura del Edi " + ex.Message);
+                
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.A6 + PathFile + "." + ex.Message);
                 return new HeaderElement();
             }
         }
         /// <summary>
         /// Metodo que lee y extrae la informacion del archivo edi de una Recibo de pedido
         /// </summary>
+        ///  <param name="MerchantIdentifier">Codigo del Comercio</param>
         /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
         /// <returns>retorna un objeto HeaderElement lleno si el proceso fue exitoso en caso contrario retorna un objeto vacio </returns>
-        public HeaderElement ReadRecAdvEdi(string PathFile)
+        public HeaderElement ReadRecAdvEdi(string MerchantIdentifier, string PathFile)
         {
             try
             {
@@ -648,8 +936,25 @@ namespace Managers
             }
             catch (Exception ex)
             {
-                LogManager.WriteLog("Se presento error durante la lectura del archivo: " + ex.Message);
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.A6 + PathFile +"."+ ex.Message);
                 return new HeaderElement();
+            }
+        }
+        /// <summary>
+        /// Metodo para revisar si el correo electronico es correcto
+        /// </summary>
+        /// <param name="email">Correo al que se desea realizar la revision</param>
+        /// <returns>bool</returns>
+        bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
             }
         }
         /// <summary>
@@ -685,7 +990,410 @@ namespace Managers
 
             return dt;
         }
+        /// <summary>
+        /// Metodo que lee el archivo de usuarios del Comercio para crear multiples usuarios
+        /// </summary>
+        ///  <param name="MerchantIdentifier">Codigo del Comercio</param>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna un objeto HeaderElement lleno si el proceso fue exitoso en caso contrario retorna un objeto vacio</returns>
+        public List<Users> ReadMerchantUser(string MerchantIdentifier, string PathFile, out int WrongRegisters, out int TotalRegisters)
+        {
 
+            var MerchantUsersToReturn = new List<Users>();
+            WrongRegisters = 0;
+            TotalRegisters = 0;
+            try
+            {
+
+                Companies MerchantUser = new Companies();
+                Users CheckUser = new Users();
+                using (TextFieldParser parser = new TextFieldParser(PathFile))
+                {
+                    parser.TextFieldType = FieldType.Delimited;
+                    parser.SetDelimiters(",");
+                    parser.ReadLine(); //Omite la primera linea
+                    
+                    while (!parser.EndOfData)
+                    {
+                        //Processing row
+                        string[] fields = parser.ReadFields();
+                        Users NewUser = new Users();
+                        TotalRegisters++;
+                        NewUser.PkIdentifier = NormalizeLength(fields[0], 35);
+                        NewUser.FkCompanies_Identifier = NormalizeLength(fields[1], 35);
+                        NewUser.ChangePasswordNextTime = true;
+                        NewUser.Name = NormalizeLength(fields[2], 175);
+                        //TODO Busca la tabla adecuada
+                        NewUser.FkRole_Identifier = NormalizeLength(fields[3], 2);
+                        NewUser.Email = NormalizeLength(fields[4], 512);
+                        if (!IsValidEmail(NewUser.Email))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, "0", Responses.M70 + NewUser.Email);
+                            WrongRegisters++;
+                            continue;
+                        }
+                        NewUser.Status = true;
+                        // Busca usuarios con el mismo ID en Usuarios o Companias
+                        CheckUser = CUsers.Instance.SearchUser(NewUser.PkIdentifier);
+                        if (!Object.ReferenceEquals(null, CheckUser))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, "0", Responses.M73 + NewUser.PkIdentifier);
+                            if (!CUsers.Instance.DeleteUser(CheckUser))
+                            {
+                                LogManager.WriteWarn(MerchantIdentifier, "0", Responses.A30 + NewUser.PkIdentifier);                            
+                                WrongRegisters++;
+                                continue;
+                            }
+                                
+                            continue;
+                        }
+                        MerchantUser = CCompanies.Instance.SearchCompaniesForId(NewUser.PkIdentifier);
+                        if (!Object.ReferenceEquals(null, MerchantUser))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, "0", Responses.M74 + NewUser.PkIdentifier);
+                            WrongRegisters++;
+                            continue;
+
+                        }
+                        // Busca el comercio asociado
+                        MerchantUser = CCompanies.Instance.SearchCompaniesForId(NewUser.FkCompanies_Identifier);
+                        if (Object.ReferenceEquals(null, MerchantUser)) {
+                            LogManager.WriteLog(MerchantIdentifier, "0", Responses.M71 + NewUser.FkCompanies_Identifier);
+                            WrongRegisters++;
+                            continue;
+                        }
+
+                        NewUser.FkCompanies_Identifier = MerchantUser.PkIdentifier;
+                        NewUser.FkCountries_Identifier = MerchantUser.FkCountries_Identifier;
+                        
+                        //Opcional el Telefono
+                        if (fields.Count() >= 6)
+                        {
+                            if (fields[5].Length > 0)
+                                NewUser.Phone = NormalizeLength(fields[5], 15);
+                        } 
+                        //TODO Hacer la vinculacion a los centros de Entrega que no se han realizado             
+                        MerchantUsersToReturn.Add(NewUser);
+                    }
+                }
+
+                return MerchantUsersToReturn;
+            }
+            catch (Exception ex)
+            {
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.A17 +Path.GetFileName(PathFile) + "."+ex.Message);
+                return new List<Users>();
+            }
+        }
+        /// <summary>
+        /// Metodo que lee el archivo de usuarios del Fabricante para crear multiples usuarios Fabricantes al mismo comercio
+        /// </summary>
+        ///  <param name="MerchantIdentifier">Codigo del Comercio</param>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna un objeto HeaderElement lleno si el proceso fue exitoso en caso contrario retorna un objeto vacio</returns>
+        public List<Companies> ReadManufacturerUser(string MerchantIdentifier, string PathFile, out int WrongRegisters, out int TotalRegisters)
+        {
+
+            var ManufacturersToReturn = new List<Companies>();
+            WrongRegisters = 0;
+            TotalRegisters = 0;
+            try
+            {
+
+                Companies MerchantUser = new Companies();
+                Users CheckUser = new Users();                
+                using (TextFieldParser parser = new TextFieldParser(PathFile))
+                {
+                    parser.TextFieldType = FieldType.Delimited;
+                    parser.SetDelimiters(",");
+                    parser.ReadLine(); //Omite la primera linea
+                    while (!parser.EndOfData)
+                    {
+                        //Processing row
+                        string[] fields = parser.ReadFields();
+                        Companies ManufacturerUser = new Companies();
+                        TotalRegisters++;                        
+                        ManufacturerUser.PkIdentifier = NormalizeLength(fields[0], 35);
+                        ManufacturerUser.Companies_Identifier = NormalizeLength(fields[1], 35);
+                        ManufacturerUser.ChangePasswordNextTime = true;
+                        ManufacturerUser.Name = NormalizeLength(fields[2], 175);
+                        //TODO Busca el role comercio
+                        ManufacturerUser.FkRole_Identifier = NormalizeLength(fields[3], 2);
+                        ManufacturerUser.Email = NormalizeLength(fields[4], 512);
+                        if (!IsValidEmail(ManufacturerUser.Email))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, "0", Responses.M70 + ManufacturerUser.Email);
+                            WrongRegisters++;
+                            continue;
+                        }
+                        ManufacturerUser.Status = true;
+                        // Busca el comercio asociado
+                        MerchantUser = CCompanies.Instance.SearchCompaniesForId(ManufacturerUser.Companies_Identifier);
+                        if (Object.ReferenceEquals(null, MerchantUser) || (MerchantUser.FkRole_Identifier.Equals("FA")))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, "0", Responses.M71 + ManufacturerUser.Companies_Identifier);
+                            WrongRegisters++;
+                            continue;
+                        }
+                        ManufacturerUser.Companies_Identifier = MerchantUser.PkIdentifier;
+                        ManufacturerUser.FkCountries_Identifier = MerchantUser.FkCountries_Identifier;
+                        // Busca usuarios con el mismo ID en Usuarios Comerciante
+                        CheckUser = CUsers.Instance.SearchUser(ManufacturerUser.PkIdentifier);
+                        if (!Object.ReferenceEquals(null, CheckUser))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, "0", Responses.M72 + ManufacturerUser.PkIdentifier);
+                            WrongRegisters++;
+                            continue;
+                        }
+                        //Modificar el fabricante si lo creo el mismo comercio que el actual
+                        MerchantUser = CCompanies.Instance.SearchCompaniesForId(ManufacturerUser.PkIdentifier);
+                        if (!Object.ReferenceEquals(null, MerchantUser))
+                        {
+                            if (MerchantUser.FkRole_Identifier.Equals("FA") && MerchantIdentifier.Equals(ManufacturerUser.Companies_Identifier))
+                            {
+                                if (!CCompanies.Instance.DeleteCompanies(MerchantUser))
+                                {
+                                    LogManager.WriteWarn(MerchantIdentifier, "0", Responses.A13 + ManufacturerUser.PkIdentifier);
+                                    WrongRegisters++;
+                                    continue;
+                                }
+                                LogManager.WriteLog(MerchantIdentifier, "0", Responses.M52 + ManufacturerUser.PkIdentifier+Responses.M52_1);
+                            }
+                            if (!MerchantIdentifier.Equals(ManufacturerUser.Companies_Identifier))
+                            {
+                                LogManager.WriteLog(MerchantIdentifier, "0", Responses.M56 + ManufacturerUser.PkIdentifier + Responses.M56_1);
+                                WrongRegisters++;
+                                continue;
+                            }
+                        }
+                            
+                        //End TODO
+                        
+
+                        ManufacturerUser.AddressStreet = NormalizeLength(fields[5], 70);
+                        ManufacturerUser.AddressNumber = NormalizeLength(fields[6], 70);
+                        ManufacturerUser.PostCode = NormalizeLength(fields[7], 9);
+                        ManufacturerUser.Town = NormalizeLength(fields[8], 35);
+                        ManufacturerUser.Region = NormalizeLength(fields[9], 9);
+
+                        if (fields.Count() >= 11)
+                        {
+                            if (fields[10].Length > 0)
+                                ManufacturerUser.Phone = NormalizeLength(fields[10], 15);
+                        }
+                        
+                        ManufacturersToReturn.Add(ManufacturerUser);
+                    }
+                }
+
+                return ManufacturersToReturn;
+            }
+            catch (Exception ex)
+            {
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.A14+ Path.GetFileName(PathFile) + "." + ex.Message);
+                return new List<Companies>();
+            }
+        }
+        /// <summary>
+        /// Metodo que lee el archivo de centros de entrega para el mismo comercio
+        /// </summary>
+        ///  <param name="MerchantIdentifier">Codigo del Comercio</param>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna un objeto HeaderElement lleno si el proceso fue exitoso en caso contrario retorna un objeto vacio</returns>
+        public List<Centres> ReadCentre(string MerchantIdentifier, string PathFile, out int WrongRegisters, out int TotalRegisters)
+        {
+
+            var CentresToReturn = new List<Centres>();
+            Companies MerchantUser = new Companies();
+            Timezones TimezoneToCheck = new Timezones();
+            WrongRegisters = 0;
+            TotalRegisters = 0;
+            try
+            {
+                using (TextFieldParser parser = new TextFieldParser(PathFile))
+                {
+                    parser.TextFieldType = FieldType.Delimited;
+                    parser.SetDelimiters(",");
+                    parser.ReadLine(); //Omite la primera linea
+                    while (!parser.EndOfData)
+                    {
+                        //Processing row
+                        string[] fields = parser.ReadFields();
+                        Centres CentreToAdd = new Centres();
+                        Centres CentreToCheck = new Centres();
+                        CentreToAdd.PkIdentifier = NormalizeLength(fields[0], 35);
+                        CentreToCheck = CCentres.Instance.SearchCentresForId(CentreToAdd.PkIdentifier);
+                        if (CentreToCheck != null)
+                        {
+                            if (CentreToCheck.FkUsers_Merchant_Identifier.Equals(MerchantIdentifier))
+                            {
+                                if (!CCentres.Instance.DeleteCenter(CentreToCheck))
+                                {
+                                    LogManager.WriteWarn(MerchantIdentifier, "0", Responses.A31 + CentreToAdd.PkIdentifier);
+                                    WrongRegisters++;
+                                    continue;
+                                }
+                                LogManager.WriteLog(MerchantIdentifier, "0", Responses.M57 + CentreToAdd.PkIdentifier + Responses.M57_1);
+                            }
+                        }
+                        CentreToAdd.FkUsers_Merchant_Identifier = NormalizeLength(fields[1], 35);
+                        MerchantUser = CCompanies.Instance.SearchCompaniesForId(CentreToAdd.FkUsers_Merchant_Identifier);
+                        if (MerchantUser==null)
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, "0", Responses.M71 + CentreToAdd.FkUsers_Merchant_Identifier);
+                            WrongRegisters++;
+                            continue;
+                        }
+                        CentreToAdd.Name = NormalizeLength(fields[2], 175);
+                        CentreToAdd.AddressStreet = NormalizeLength(fields[3], 70);
+                        CentreToAdd.AddressNumber = NormalizeLength(fields[4], 70);
+                        CentreToAdd.PostCode = NormalizeLength(fields[5], 9);
+                        CentreToAdd.Town = NormalizeLength(fields[6], 35);
+                        CentreToAdd.Region = NormalizeLength(fields[7], 9);
+                        CentreToAdd.Status = true;
+                        //Hacer la consulta para encontrar la zona horaria adecuada
+                        TimezoneToCheck = CTimezones.Instance.SearchTimezonesForCode(NormalizeLength(fields[8], 4));
+                        if (TimezoneToCheck == null)
+                        {
+                            LogManager.WriteWarn(MerchantIdentifier, CentreToAdd.PkIdentifier, Responses.A33 + NormalizeLength(fields[8], 4) + Responses.A33_1 + CentreToAdd.PkIdentifier);
+                            WrongRegisters++;
+                            continue;
+                        }
+                        CentreToAdd.FkTimezones_Identifier = TimezoneToCheck.PkIdentifier;
+                        CentreToAdd.NumberOfDocks = Int16.Parse(NormalizeLength(fields[9], 5));
+                        CentreToAdd.TimeBetweenSuppliers = Int16.Parse(NormalizeLength(fields[10], 4));
+                        //Valores por Defecto
+                        CentreToAdd.WeeklyCapacity = 200;
+                        CentreToAdd.CurrentWeekCapacity = 0;
+                        CentreToAdd.FirstDay = "D";
+                        CentreToAdd.ListOfWorkingDays = "LMXJV";
+                        DateTime HoursToEmulate = DateTime.Parse("08:00", System.Globalization.CultureInfo.CurrentCulture);
+                        CentreToAdd.StartTime = HoursToEmulate;
+                        HoursToEmulate = DateTime.Parse("17:00", System.Globalization.CultureInfo.CurrentCulture);
+                        CentreToAdd.EndTime = HoursToEmulate;
+
+                        if (fields.Count() > 11)
+                        {    
+                            if (fields[11].Length > 0)
+                                CentreToAdd.WeeklyCapacity = Int32.Parse(NormalizeLength(fields[11], 4));
+                        }
+                        if (fields.Count() > 12)
+                        {
+                            if (fields[12].Length > 0)
+                                CentreToAdd.FirstDay = NormalizeLength(fields[12], 1);
+                        }
+                        if (fields.Count() > 13)
+                        {
+                            if (fields[13].Length > 0)
+                                CentreToAdd.ListOfWorkingDays = NormalizeLength(fields[13], 7);
+                        }
+                        
+                        
+                        if (fields.Count() > 14)
+                        {
+                            string HoursMinutes = NormalizeLength(fields[14], 4).Substring(0, 2) + ":" + NormalizeLength(fields[14], 4).Substring(2, 2);
+                            HoursToEmulate = DateTime.Parse(HoursMinutes, System.Globalization.CultureInfo.CurrentCulture);
+                            if (fields[14].Length > 0)
+                                CentreToAdd.StartTime = HoursToEmulate;
+                        }
+                        if (fields.Count() > 15)
+                        {
+                            string HoursMinutes = NormalizeLength(fields[15], 4).Substring(0, 2) + ":" + NormalizeLength(fields[15], 4).Substring(2, 2);
+                            HoursToEmulate = DateTime.Parse(HoursMinutes, System.Globalization.CultureInfo.CurrentCulture);
+                            if (fields[15].Length > 0)
+                                CentreToAdd.EndTime = HoursToEmulate;
+                        }
+                        CentresToReturn.Add(CentreToAdd);
+                    }
+                }
+
+                return CentresToReturn;
+            }
+            catch (Exception ex)
+            {
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.A20 + Path.GetFileName(PathFile) + "." + ex.Message);
+                return new List<Centres>();
+            }
+        }
+        /// <summary>
+        /// Metodo que lee el archivo de tiempos de descarga para los centros de entrega del comercio
+        /// </summary>
+        ///  <param name="MerchantIdentifier">Codigo del Comercio</param>
+        /// <param name="PathFile">ruta y nombre  del archivo con su respectiva extension</param>
+        /// <returns>retorna un objeto HeaderElement lleno si el proceso fue exitoso en caso contrario retorna un objeto vacio</returns>
+        public List<UnloadingTime> ReadUnloadingTime(string MerchantIdentifier, string PathFile, out int WrongRegisters, out int TotalRegisters)
+        {
+            WrongRegisters = 0;
+            TotalRegisters = 0;
+            var UnloadingTimesToReturn = new List<UnloadingTime>();
+            try
+            {
+
+                
+                using (TextFieldParser parser = new TextFieldParser(PathFile))
+                {
+                    parser.TextFieldType = FieldType.Delimited;
+                    parser.SetDelimiters(",");
+                    parser.ReadLine(); //Omite la primera linea
+                    while (!parser.EndOfData)
+                    {
+                        //Processing row
+                        Companies CheckCompanies = new Companies();
+                        Centres CheckCentres = new Centres();
+                        UnloadingTime UnloadingTimeToAdd = new UnloadingTime();
+                        string[] fields = parser.ReadFields();
+                        UnloadingTimeToAdd.FkCentres_Identifier = NormalizeLength(fields[1], 35);
+                        CheckCentres = CCentres.Instance.SearchCentresForId(UnloadingTimeToAdd.FkCentres_Identifier);                     
+                        if (Object.ReferenceEquals(null, CheckCentres))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, UnloadingTimeToAdd.FkCentres_Identifier, Responses.M75+ UnloadingTimeToAdd.FkCentres_Identifier);
+                            WrongRegisters++;
+                            continue;
+                        }
+                        //Existe un comercio del centro de entrega y es igual al que viene en el archivo
+                        CheckCompanies = CCompanies.Instance.SearchCompaniesForId(CheckCentres.FkUsers_Merchant_Identifier);
+                        if (!CheckCompanies.PkIdentifier.Equals(NormalizeLength(fields[0], 35)))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, UnloadingTimeToAdd.FkCentres_Identifier, Responses.M75 + UnloadingTimeToAdd.FkCentres_Identifier+ Responses.M76+ NormalizeLength(fields[0], 35));
+                            WrongRegisters++;
+                            continue;
+                        }
+
+                        UnloadingTimeToAdd.FkUsers_Manufacturer_Identifier = NormalizeLength(fields[2], 35);
+                        CheckCompanies = CCompanies.Instance.SearchCompaniesForId(UnloadingTimeToAdd.FkUsers_Manufacturer_Identifier);
+                        if (Object.ReferenceEquals(null, CheckCompanies))
+                        {
+                            LogManager.WriteLog(MerchantIdentifier, UnloadingTimeToAdd.FkCentres_Identifier, Responses.M77 + UnloadingTimeToAdd.FkUsers_Manufacturer_Identifier);
+                            WrongRegisters++;
+                            continue;
+                        }
+                        UnloadingTimeToAdd.ProductCode = NormalizeLength(fields[3], 35);
+                        UnloadingTimeToAdd.MeasureUnit = NormalizeLength(fields[4], 35);
+                        UnloadingTimeToAdd.Dock= Convert.ToSByte(NormalizeLength(fields[5], 35));
+                        UnloadingTimeToAdd.AmountPerPallet = Convert.ToDecimal( NormalizeLength(fields[6], 5));
+                        UnloadingTimeToAdd.SpecificUnloadingTime = Convert.ToInt32(NormalizeLength(fields[7], 4));
+                        UnloadingTimeToAdd.Status = true;
+                        UnloadingTimeToAdd.LastChangeDate = DateTime.Now;
+                        TotalRegisters++;
+                        UnloadingTimesToReturn.Add(UnloadingTimeToAdd);
+
+
+                        //TODO Cargar la descripcion de los productos AQUI...
+                    }
+                }
+
+                return UnloadingTimesToReturn;
+            }
+            catch (Exception ex)
+            {
+               
+
+                LogManager.WriteLog(MerchantIdentifier, "0", Responses.A24 + Path.GetFileName(PathFile) + "."+ex.Message);
+                WrongRegisters = 0;
+                TotalRegisters = 0;
+                return new List<UnloadingTime>();
+            }
+        }
         #endregion Methods
     }
 
@@ -713,4 +1421,6 @@ namespace Managers
         public string ReceiptWarningNumber { get; set; }
         public List<DetailElement> Details { get; set; }
     }
+
+  
 }

@@ -1,0 +1,430 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="A0" xml:space="preserve">
+    <value>Error en el metodo</value>
+  </data>
+  <data name="A1" xml:space="preserve">
+    <value>Inicio de Ejecucion de Archivos Maestros: EDI y CSV. Comercio: </value>
+  </data>
+  <data name="A10" xml:space="preserve">
+    <value>Se presento problemas con los datos obligatorios suministrados.</value>
+  </data>
+  <data name="A11" xml:space="preserve">
+    <value>Se generaron inconvenientes en el procesamiento del Aviso del archivo: </value>
+  </data>
+  <data name="A12" xml:space="preserve">
+    <value>Error  durante el guarde de la Orden:</value>
+  </data>
+  <data name="A13" xml:space="preserve">
+    <value>Error al borrar el Fabricante:</value>
+  </data>
+  <data name="A14" xml:space="preserve">
+    <value>Se generaron inconvenientes en el procesamiento del Fabricante del archivo:</value>
+  </data>
+  <data name="A15" xml:space="preserve">
+    <value>Error al tratar de guardar usuario Fabricante:</value>
+  </data>
+  <data name="A16" xml:space="preserve">
+    <value>Error al durante el guarde de elemento Fabricante: </value>
+  </data>
+  <data name="A17" xml:space="preserve">
+    <value>Se generaron inconvenientes en el procesamiento del Comercio del archivo:</value>
+  </data>
+  <data name="A18" xml:space="preserve">
+    <value>Error al tratar de guardar usuario Fabricante:</value>
+  </data>
+  <data name="A19" xml:space="preserve">
+    <value>Error al durante el guarde de elemento Fabricante:</value>
+  </data>
+  <data name="A2" xml:space="preserve">
+    <value>El archivo </value>
+  </data>
+  <data name="A20" xml:space="preserve">
+    <value>Se generaron inconvenientes en el procesamiento de Centros de Entrega del archivo:</value>
+  </data>
+  <data name="A21" xml:space="preserve">
+    <value>Se generaron inconvenientes en el procesamiento de Centros de Entrega del archivo:</value>
+  </data>
+  <data name="A22" xml:space="preserve">
+    <value>Error al tratar de guardar Centro de Entrega:</value>
+  </data>
+  <data name="A23" xml:space="preserve">
+    <value>Error al durante el guarde de elemento Centro de Entrega:</value>
+  </data>
+  <data name="A24" xml:space="preserve">
+    <value>Se generaron inconvenientes en el procesamiento de Tiempos de Descarga del archivo:</value>
+  </data>
+  <data name="A25" xml:space="preserve">
+    <value>Se generaron inconvenientes en el procesamiento del Tiempos de Descarga del archivo:</value>
+  </data>
+  <data name="A26" xml:space="preserve">
+    <value>Error al tratar de guardar Tiempos de Descarga: </value>
+  </data>
+  <data name="A27" xml:space="preserve">
+    <value>Error al durante el guarde de elemento Tiempos de Descarga: </value>
+  </data>
+  <data name="A28" xml:space="preserve">
+    <value>No existe las carpetas para ese comercio: </value>
+  </data>
+  <data name="A29" xml:space="preserve">
+    <value>Fin de Ejecucion de Archivos Maestros: EDI y CSV. Comercio:</value>
+  </data>
+  <data name="A2_1" xml:space="preserve">
+    <value>no ha tiene una extension reconocible (EDI o CSV) y sera omitido.</value>
+  </data>
+  <data name="A3" xml:space="preserve">
+    <value>El archivo {0}  ha sido cargado al sistema y tiene firma MD5 {1}.</value>
+  </data>
+  <data name="A30" xml:space="preserve">
+    <value>Error al borrar el Usuario Administrador / Operador: </value>
+  </data>
+  <data name="A31" xml:space="preserve">
+    <value>Error al borrar el Centro de Entrega:</value>
+  </data>
+  <data name="A32" xml:space="preserve">
+    <value> fue subido exitosamente a la carpeta Procesados y fue guardado exitosamente.</value>
+  </data>
+  <data name="A33" xml:space="preserve">
+    <value>No se encuentra la zona horaria </value>
+  </data>
+  <data name="A33_1" xml:space="preserve">
+    <value> para el centro:</value>
+  </data>
+  <data name="A34" xml:space="preserve">
+    <value> fue eliminado exitosamente a la carpeta SinProcesar</value>
+  </data>
+  <data name="A35" xml:space="preserve">
+    <value> no fue eliminado de la carpeta SinProcesar</value>
+  </data>
+  <data name="A36" xml:space="preserve">
+    <value>No fue posible guardar la informacion del archivo: </value>
+  </data>
+  <data name="A37" xml:space="preserve">
+    <value>El archivo no fue Subido exitosamente a la carpeta Procesados: </value>
+  </data>
+  <data name="A38" xml:space="preserve">
+    <value>Error durante la ejecucion de de ejecucion orden de ProcessOrder: </value>
+  </data>
+  <data name="A3_1" xml:space="preserve">
+    <value> ha sido cargado al sistema y tiene firma MD5: </value>
+  </data>
+  <data name="A4" xml:space="preserve">
+    <value>No se puede iniciar el flujo general. Excepcion: </value>
+  </data>
+  <data name="A5" xml:space="preserve">
+    <value>Le faltan campos obligatorios EDI, ejemplo BGM, NAD, UNZ.</value>
+  </data>
+  <data name="A6" xml:space="preserve">
+    <value>Se presento error durante la lectura del archivo:</value>
+  </data>
+  <data name="A7" xml:space="preserve">
+    <value>Error al tratar de guardar productos del Aviso:</value>
+  </data>
+  <data name="A8" xml:space="preserve">
+    <value>Error al tratar de guardar productos de la Orden:</value>
+  </data>
+  <data name="A9" xml:space="preserve">
+    <value>Error  durante el guarde del Aviso:</value>
+  </data>
+  <data name="M38" xml:space="preserve">
+    <value>El correo electrónico ingresado ya se encuentra registrado para otro usuario</value>
+  </data>
+  <data name="M45" xml:space="preserve">
+    <value>El archivo </value>
+  </data>
+  <data name="M45_1" xml:space="preserve">
+    <value> no cumple con la estructura definida</value>
+  </data>
+  <data name="M46" xml:space="preserve">
+    <value>La extensión del archivo no es .csv</value>
+  </data>
+  <data name="M47" xml:space="preserve">
+    <value>El campo: </value>
+  </data>
+  <data name="M47_1" xml:space="preserve">
+    <value>es obligatorio</value>
+  </data>
+  <data name="M48" xml:space="preserve">
+    <value>El campo: </value>
+  </data>
+  <data name="M48_1" xml:space="preserve">
+    <value>falta.  No queda completa su funcionalidad.</value>
+  </data>
+  <data name="M49" xml:space="preserve">
+    <value>El campo: </value>
+  </data>
+  <data name="M49_1" xml:space="preserve">
+    <value> excede el tamaño permitido</value>
+  </data>
+  <data name="M50" xml:space="preserve">
+    <value>El campo: </value>
+  </data>
+  <data name="M50_1" xml:space="preserve">
+    <value> tiene caracteres no permitidos</value>
+  </data>
+  <data name="M51" xml:space="preserve">
+    <value>Se cargaron </value>
+  </data>
+  <data name="M51_1" xml:space="preserve">
+    <value> con éxito</value>
+  </data>
+  <data name="M52" xml:space="preserve">
+    <value>El proveedor </value>
+  </data>
+  <data name="M52_1" xml:space="preserve">
+    <value> ya se encuentra registrado, se realiza la modificación de la información</value>
+  </data>
+  <data name="M53" xml:space="preserve">
+    <value>El producto </value>
+  </data>
+  <data name="M53_1" xml:space="preserve">
+    <value>ya se encuentra registrado, se realiza la modificación de la información</value>
+  </data>
+  <data name="M54" xml:space="preserve">
+    <value>El producto </value>
+  </data>
+  <data name="M54_1" xml:space="preserve">
+    <value>ya se encuentra registrado y la información de proveedor es diferente, no se realiza la modificación</value>
+  </data>
+  <data name="M55" xml:space="preserve">
+    <value>El usuario </value>
+  </data>
+  <data name="M55_1" xml:space="preserve">
+    <value>ya se encuentra registrado, se realiza la modificación de la información</value>
+  </data>
+  <data name="M56" xml:space="preserve">
+    <value>El proveedor </value>
+  </data>
+  <data name="M56_1" xml:space="preserve">
+    <value>ya se encuentra registrado por otro comercio, no se realiza la modificación de la información</value>
+  </data>
+  <data name="M57" xml:space="preserve">
+    <value>El centro de entrega </value>
+  </data>
+  <data name="M57_1" xml:space="preserve">
+    <value>ya se encuentra registrado, se realiza la modificación de la información</value>
+  </data>
+  <data name="M58" xml:space="preserve">
+    <value>Para la orden de compra </value>
+  </data>
+  <data name="M58_1" xml:space="preserve">
+    <value>el proveedor</value>
+  </data>
+  <data name="M58_2" xml:space="preserve">
+    <value>no se encuentra registrado</value>
+  </data>
+  <data name="M59" xml:space="preserve">
+    <value>Para la orden de compra </value>
+  </data>
+  <data name="M59_1" xml:space="preserve">
+    <value>el centro de entrega </value>
+  </data>
+  <data name="M59_2" xml:space="preserve">
+    <value>no se encuentra registrado</value>
+  </data>
+  <data name="M60" xml:space="preserve">
+    <value>La orden de compra </value>
+  </data>
+  <data name="M60_1" xml:space="preserve">
+    <value>ya se encuentra registrada en el estado</value>
+  </data>
+  <data name="M61" xml:space="preserve">
+    <value>Para la orden de compra </value>
+  </data>
+  <data name="M61_1" xml:space="preserve">
+    <value>el comercio </value>
+  </data>
+  <data name="M61_2" xml:space="preserve">
+    <value>no se encuentra registrado</value>
+  </data>
+  <data name="M62" xml:space="preserve">
+    <value>Para la orden de compra </value>
+  </data>
+  <data name="M62_1" xml:space="preserve">
+    <value>no tiene un turno agendado</value>
+  </data>
+  <data name="M63" xml:space="preserve">
+    <value>Para la orden de compra </value>
+  </data>
+  <data name="M63_1" xml:space="preserve">
+    <value>las fechas del RECDV es menor</value>
+  </data>
+  <data name="M64" xml:space="preserve">
+    <value>La extensión del archivo no es .edi</value>
+    <comment>Correo JImmy Orduz 26-05-2017 no se validaran las extensiones.</comment>
+  </data>
+  <data name="M65" xml:space="preserve">
+    <value>No se puede convertir el archivo: </value>
+  </data>
+  <data name="M65_1" xml:space="preserve">
+    <value> se encontraron menos campos de los esperados:</value>
+  </data>
+  <data name="M66" xml:space="preserve">
+    <value>No existe la orden </value>
+  </data>
+  <data name="M66_1" xml:space="preserve">
+    <value>para el Aviso</value>
+  </data>
+  <data name="M67" xml:space="preserve">
+    <value>Para el aviso</value>
+  </data>
+  <data name="M67_1" xml:space="preserve">
+    <value>el comercio</value>
+  </data>
+  <data name="M67_2" xml:space="preserve">
+    <value>no se encuentra registrado</value>
+  </data>
+  <data name="M68" xml:space="preserve">
+    <value>Para el aviso</value>
+  </data>
+  <data name="M68_1" xml:space="preserve">
+    <value> el centro</value>
+  </data>
+  <data name="M68_2" xml:space="preserve">
+    <value>no se encuentra registrado</value>
+  </data>
+  <data name="M69" xml:space="preserve">
+    <value>Para la orden</value>
+  </data>
+  <data name="M70" xml:space="preserve">
+    <value>El correo electronico esta errado:</value>
+  </data>
+  <data name="M71" xml:space="preserve">
+    <value>No se encuentra el comercio registrado:</value>
+  </data>
+  <data name="M72" xml:space="preserve">
+    <value>Ya existe un usuario  Administrador / Operador con el mismo Identificador de este Fabricante: </value>
+  </data>
+  <data name="M73" xml:space="preserve">
+    <value>Ya existe un usuario  Administrador / Operador con el mismo Identificador:</value>
+  </data>
+  <data name="M74" xml:space="preserve">
+    <value>Ya existe un usuario  Comerciante / Fabricante con el mismo Identificador:</value>
+  </data>
+  <data name="M75" xml:space="preserve">
+    <value>No se encuentra el centro de entrega registrado: </value>
+  </data>
+  <data name="M76" xml:space="preserve">
+    <value>para el comercio registrado: </value>
+  </data>
+  <data name="M77" xml:space="preserve">
+    <value>No se encuentra el fabricante registrado:</value>
+  </data>
+</root>

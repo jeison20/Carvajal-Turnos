@@ -1,0 +1,2062 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Advices">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkUsers_Merchant_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="FkUsers_Manufacturer_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="AdviceNumber" Type="varchar" MaxLength="35" />
+          <Property Name="ManualAdvise" Type="bit" Nullable="false" />
+          <Property Name="Orders_OrderNumber" Type="varchar" MaxLength="35" />
+          <Property Name="FkCentres_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="ReceiptDate" Type="smalldatetime" />
+          <Property Name="ProcessingDate" Type="smalldatetime" />
+        </EntityType>
+        <EntityType Name="AdvicesProducts">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkAdvices_Identifier" Type="bigint" />
+          <Property Name="Code" Type="varchar" MaxLength="35" />
+          <Property Name="ReceivedAndAcceptedQuantity" Type="bigint" />
+        </EntityType>
+        <EntityType Name="BlockCalendar">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkUsers_Merchant_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="FkCentres_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="StartDateTime" Type="smalldatetime" />
+          <Property Name="EndDateTime" Type="smalldatetime" />
+          <Property Name="Dock" Type="int" />
+          <Property Name="GeneralRuleToApply" Type="bit" Nullable="false" />
+          <Property Name="FkBlockingReasons_Identifier" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="LastChangeDate" Type="smalldatetime" />
+          <Property Name="FkUsers_Creator_Identifier" Type="varchar" MaxLength="35" />
+        </EntityType>
+        <EntityType Name="BlockingReasons">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="35" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Centres">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="FkUsers_Merchant_Identifier" Type="varchar" MaxLength="35" Nullable="false" />
+          <Property Name="FkUsers_Responsable_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="PkIdentifier" Type="varchar" MaxLength="35" Nullable="false" />
+          <Property Name="WeeklyCapacity" Type="int" />
+          <Property Name="CurrentWeekCapacity" Type="int" />
+          <Property Name="FirstDay" Type="char" MaxLength="1" />
+          <Property Name="ListOfWorkingDays" Type="varchar" MaxLength="7" />
+          <Property Name="StartTime" Type="smalldatetime" />
+          <Property Name="EndTime" Type="smalldatetime" />
+          <Property Name="Name" Type="varchar" MaxLength="175" />
+          <Property Name="NumberOfDocks" Type="smallint" />
+          <Property Name="TimeBetweenSuppliers" Type="int" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="LastChangeDate" Type="smalldatetime" />
+          <Property Name="FkTimezones_Identifier" Type="bigint" Nullable="false" />
+          <Property Name="AddressStreet" Type="varchar" MaxLength="70" />
+          <Property Name="AddressNumber" Type="varchar" MaxLength="70" />
+          <Property Name="PostCode" Type="varchar" MaxLength="9" />
+          <Property Name="Town" Type="varchar" MaxLength="35" />
+          <Property Name="Region" Type="varchar" MaxLength="9" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="User" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Token" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="RefreshTokenLifeTime" Type="datetime" Nullable="false" />
+          <Property Name="AllowedOrigin" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Companies">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="varchar" MaxLength="35" Nullable="false" />
+          <Property Name="ChangePasswordNextTime" Type="bit" />
+          <Property Name="Password" Type="varchar" MaxLength="100" />
+          <Property Name="Name" Type="varchar" MaxLength="175" Nullable="false" />
+          <Property Name="LastAccess" Type="smalldatetime" />
+          <Property Name="FkRole_Identifier" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="512" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="Phone" Type="varchar" MaxLength="15" />
+          <Property Name="LastChangeDate" Type="smalldatetime" />
+          <Property Name="Companies_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="AddressStreet" Type="varchar" MaxLength="70" />
+          <Property Name="AddressNumber" Type="varchar" MaxLength="70" />
+          <Property Name="PostCode" Type="varchar" MaxLength="9" />
+          <Property Name="Town" Type="varchar" MaxLength="35" />
+          <Property Name="Region" Type="varchar" MaxLength="9" />
+          <Property Name="FkCountries_Identifier" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Countries">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="35" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LinkedCentres">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkUsers_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="FkCentres_Identifier" Type="varchar" MaxLength="35" />
+        </EntityType>
+        <EntityType Name="LinkedProducts">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkUsers_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="ProductCode" Type="varchar" MaxLength="35" />
+        </EntityType>
+        <EntityType Name="LinkedUsers">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkUsers_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="FkUsers_Parent_Identifier" Type="varchar" MaxLength="35" />
+        </EntityType>
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkUsers_Merchant_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="FkUsers_Manufacturer_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="OrderNumber" Type="varchar" MaxLength="35" />
+          <Property Name="MaxDeliveryDate" Type="smalldatetime" />
+          <Property Name="OrderType" Type="varchar" MaxLength="3" />
+          <Property Name="FkStatus_Identifier" Type="int" />
+          <Property Name="LastChangeDate" Type="smalldatetime" />
+          <Property Name="ProcessingDate" Type="smalldatetime" />
+        </EntityType>
+        <EntityType Name="OrdersProducts">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkOrders_Identifier" Type="bigint" />
+          <Property Name="Line" Type="int" />
+          <Property Name="Code" Type="varchar" MaxLength="35" />
+          <Property Name="Description" Type="varchar" MaxLength="70" />
+          <Property Name="SplitQuantity" Type="bigint" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="Scope" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="35" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Status">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="35" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Timezones">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkCountries_Identifier" Type="bigint" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="UTCOffset" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Turns">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkUsers_Merchant_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="FkUsers_Manufacturer_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="FkUsers_Requester_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="FkUsers_Modifier_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="Orders_OrderNumber" Type="varchar" MaxLength="35" />
+          <Property Name="ReceivingAdvice_ReceivingAdviceNumber" Type="varchar" MaxLength="35" />
+          <Property Name="Dock" Type="smallint" />
+          <Property Name="StartDateTime" Type="smalldatetime" />
+          <Property Name="EndDateTime" Type="smalldatetime" />
+          <Property Name="FixedTime" Type="smalldatetime" />
+          <Property Name="VariableTime" Type="smalldatetime" />
+          <Property Name="LastChangeDate" Type="smalldatetime" />
+          <Property Name="FkTurnsStatus_Identifier" Type="char" MaxLength="1" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TurnsProducts">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkTurns_Identifier" Type="bigint" />
+          <Property Name="Code" Type="varchar" MaxLength="35" />
+          <Property Name="ScheludedQuantity" Type="bigint" />
+        </EntityType>
+        <EntityType Name="TurnsStatus">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="35" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UnloadingTime">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FkCentres_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="FkUsers_Manufacturer_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="ProductCode" Type="varchar" MaxLength="35" />
+          <Property Name="MeasureUnit" Type="varchar" MaxLength="3" />
+          <Property Name="Dock" Type="smallint" />
+          <Property Name="AmountPerPallet" Type="decimal" Precision="14" Scale="7" />
+          <Property Name="SpecificUnloadingTime" Type="int" />
+          <Property Name="PalletType" Type="char" MaxLength="1" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="LastChangeDate" Type="smalldatetime" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="varchar" MaxLength="35" Nullable="false" />
+          <Property Name="ChangePasswordNextTime" Type="bit" />
+          <Property Name="Password" Type="varchar" MaxLength="100" />
+          <Property Name="Name" Type="varchar" MaxLength="175" Nullable="false" />
+          <Property Name="LastAccess" Type="smalldatetime" />
+          <Property Name="FkRole_Identifier" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="512" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="Phone" Type="varchar" MaxLength="15" />
+          <Property Name="LastChangeDate" Type="smalldatetime" />
+          <Property Name="FkCompanies_Identifier" Type="varchar" MaxLength="35" />
+          <Property Name="FkCountries_Identifier" Type="bigint" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Advices_FkCentres_Identifier">
+          <End Role="Centres" Type="Self.Centres" Multiplicity="0..1" />
+          <End Role="Advices" Type="Self.Advices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Centres">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Advices">
+              <PropertyRef Name="FkCentres_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Advices_FkUsers_Manufacturer_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Advices" Type="Self.Advices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Advices">
+              <PropertyRef Name="FkUsers_Manufacturer_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Advices_FkUsers_Merchant_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Advices" Type="Self.Advices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Advices">
+              <PropertyRef Name="FkUsers_Merchant_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdvicesProducts_FkAdvices_Identifier">
+          <End Role="Advices" Type="Self.Advices" Multiplicity="0..1" />
+          <End Role="AdvicesProducts" Type="Self.AdvicesProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Advices">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="AdvicesProducts">
+              <PropertyRef Name="FkAdvices_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Centres_FkTimezones_Identifier">
+          <End Role="Timezones" Type="Self.Timezones" Multiplicity="1" />
+          <End Role="Centres" Type="Self.Centres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Timezones">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Centres">
+              <PropertyRef Name="FkTimezones_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Centres_FkUsers_Merchant_Identifier">
+          <End Role="Companies" Type="Self.Companies" Multiplicity="1" />
+          <End Role="Centres" Type="Self.Centres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Centres">
+              <PropertyRef Name="FkUsers_Merchant_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Centres_FkUsers_Responsable_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Centres" Type="Self.Centres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Centres">
+              <PropertyRef Name="FkUsers_Responsable_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Companies_FkCountries_Identifier">
+          <End Role="Countries" Type="Self.Countries" Multiplicity="1" />
+          <End Role="Companies" Type="Self.Companies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Companies">
+              <PropertyRef Name="FkCountries_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Companies_FkRole_Identifier">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="Companies" Type="Self.Companies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Companies">
+              <PropertyRef Name="FkRole_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Exceptions_FkBlockingReasons_Identifier">
+          <End Role="BlockingReasons" Type="Self.BlockingReasons" Multiplicity="1" />
+          <End Role="BlockCalendar" Type="Self.BlockCalendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BlockingReasons">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="BlockCalendar">
+              <PropertyRef Name="FkBlockingReasons_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Exceptions_FkCentres_Identifier">
+          <End Role="Centres" Type="Self.Centres" Multiplicity="0..1" />
+          <End Role="BlockCalendar" Type="Self.BlockCalendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Centres">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="BlockCalendar">
+              <PropertyRef Name="FkCentres_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExceptionsMerchant_FkUsers_Merchant_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="BlockCalendar" Type="Self.BlockCalendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="BlockCalendar">
+              <PropertyRef Name="FkUsers_Merchant_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExceptionsModifier_FkUsers_Modifier_Creator_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="BlockCalendar" Type="Self.BlockCalendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="BlockCalendar">
+              <PropertyRef Name="FkUsers_Creator_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LinkedCentres_FkCentres_Identifier">
+          <End Role="Centres" Type="Self.Centres" Multiplicity="0..1" />
+          <End Role="LinkedCentres" Type="Self.LinkedCentres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Centres">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="LinkedCentres">
+              <PropertyRef Name="FkCentres_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LinkedCentresChild_FkUsers_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="LinkedUsers" Type="Self.LinkedUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="LinkedUsers">
+              <PropertyRef Name="FkUsers_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LinkedCentresMerchant_FkUsers_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="LinkedCentres" Type="Self.LinkedCentres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="LinkedCentres">
+              <PropertyRef Name="FkUsers_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LinkedCentresParent_FkUsers_Parent_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="LinkedUsers" Type="Self.LinkedUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="LinkedUsers">
+              <PropertyRef Name="FkUsers_Parent_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LinkedProducts_FkUsers_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="LinkedProducts" Type="Self.LinkedProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="LinkedProducts">
+              <PropertyRef Name="FkUsers_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_FkStatus_Identifier">
+          <End Role="Status" Type="Self.Status" Multiplicity="0..1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="FkStatus_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdersManufacturer_FkUsers_Manufacturer_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="FkUsers_Manufacturer_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdersMerchant_FkUsers_Merchant_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="FkUsers_Merchant_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdersProducts_FkOrders_Identifier">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="0..1" />
+          <End Role="OrdersProducts" Type="Self.OrdersProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="OrdersProducts">
+              <PropertyRef Name="FkOrders_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Timezones_FkCountries_Identifier">
+          <End Role="Countries" Type="Self.Countries" Multiplicity="1" />
+          <End Role="Timezones" Type="Self.Timezones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Timezones">
+              <PropertyRef Name="FkCountries_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Turns_FkTurnsStatus_Identifier">
+          <End Role="TurnsStatus" Type="Self.TurnsStatus" Multiplicity="1" />
+          <End Role="Turns" Type="Self.Turns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TurnsStatus">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Turns">
+              <PropertyRef Name="FkTurnsStatus_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Turns_FkUsers_Manufacturer_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Turns" Type="Self.Turns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Turns">
+              <PropertyRef Name="FkUsers_Manufacturer_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Turns_FkUsers_Merchant_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Turns" Type="Self.Turns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Turns">
+              <PropertyRef Name="FkUsers_Merchant_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Turns_FkUsers_Modifier_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Turns" Type="Self.Turns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Turns">
+              <PropertyRef Name="FkUsers_Modifier_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Turns_FkUsers_Requester_Identifier">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Turns" Type="Self.Turns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Turns">
+              <PropertyRef Name="FkUsers_Requester_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TurnsProducts_FkTurns_Identifier">
+          <End Role="Turns" Type="Self.Turns" Multiplicity="0..1" />
+          <End Role="TurnsProducts" Type="Self.TurnsProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Turns">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="TurnsProducts">
+              <PropertyRef Name="FkTurns_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UnloadingTime_FkCentres_Identifier">
+          <End Role="Centres" Type="Self.Centres" Multiplicity="0..1" />
+          <End Role="UnloadingTime" Type="Self.UnloadingTime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Centres">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="UnloadingTime">
+              <PropertyRef Name="FkCentres_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UnloadingTime_FkUsers_Manufacturer_Identifier">
+          <End Role="Companies" Type="Self.Companies" Multiplicity="0..1" />
+          <End Role="UnloadingTime" Type="Self.UnloadingTime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="UnloadingTime">
+              <PropertyRef Name="FkUsers_Manufacturer_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_FkCompanies_Identifier">
+          <End Role="Companies" Type="Self.Companies" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="FkCompanies_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_FkCountries_Identifier">
+          <End Role="Countries" Type="Self.Countries" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="FkCountries_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_FkRole_Identifier">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="FkRole_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ModelStoreContainer">
+          <EntitySet Name="Advices" EntityType="Self.Advices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AdvicesProducts" EntityType="Self.AdvicesProducts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BlockCalendar" EntityType="Self.BlockCalendar" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BlockingReasons" EntityType="Self.BlockingReasons" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Centres" EntityType="Self.Centres" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Client" EntityType="Self.Client" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Companies" EntityType="Self.Companies" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Countries" EntityType="Self.Countries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LinkedCentres" EntityType="Self.LinkedCentres" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LinkedProducts" EntityType="Self.LinkedProducts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LinkedUsers" EntityType="Self.LinkedUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrdersProducts" EntityType="Self.OrdersProducts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Timezones" EntityType="Self.Timezones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Turns" EntityType="Self.Turns" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TurnsProducts" EntityType="Self.TurnsProducts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TurnsStatus" EntityType="Self.TurnsStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UnloadingTime" EntityType="Self.UnloadingTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Advices_FkCentres_Identifier" Association="Self.FK_Advices_FkCentres_Identifier">
+            <End Role="Centres" EntitySet="Centres" />
+            <End Role="Advices" EntitySet="Advices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Advices_FkUsers_Manufacturer_Identifier" Association="Self.FK_Advices_FkUsers_Manufacturer_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Advices" EntitySet="Advices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Advices_FkUsers_Merchant_Identifier" Association="Self.FK_Advices_FkUsers_Merchant_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Advices" EntitySet="Advices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdvicesProducts_FkAdvices_Identifier" Association="Self.FK_AdvicesProducts_FkAdvices_Identifier">
+            <End Role="Advices" EntitySet="Advices" />
+            <End Role="AdvicesProducts" EntitySet="AdvicesProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Centres_FkTimezones_Identifier" Association="Self.FK_Centres_FkTimezones_Identifier">
+            <End Role="Timezones" EntitySet="Timezones" />
+            <End Role="Centres" EntitySet="Centres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Centres_FkUsers_Merchant_Identifier" Association="Self.FK_Centres_FkUsers_Merchant_Identifier">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="Centres" EntitySet="Centres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Centres_FkUsers_Responsable_Identifier" Association="Self.FK_Centres_FkUsers_Responsable_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Centres" EntitySet="Centres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Companies_FkCountries_Identifier" Association="Self.FK_Companies_FkCountries_Identifier">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Companies" EntitySet="Companies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Companies_FkRole_Identifier" Association="Self.FK_Companies_FkRole_Identifier">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Companies" EntitySet="Companies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Exceptions_FkBlockingReasons_Identifier" Association="Self.FK_Exceptions_FkBlockingReasons_Identifier">
+            <End Role="BlockingReasons" EntitySet="BlockingReasons" />
+            <End Role="BlockCalendar" EntitySet="BlockCalendar" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Exceptions_FkCentres_Identifier" Association="Self.FK_Exceptions_FkCentres_Identifier">
+            <End Role="Centres" EntitySet="Centres" />
+            <End Role="BlockCalendar" EntitySet="BlockCalendar" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExceptionsMerchant_FkUsers_Merchant_Identifier" Association="Self.FK_ExceptionsMerchant_FkUsers_Merchant_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="BlockCalendar" EntitySet="BlockCalendar" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExceptionsModifier_FkUsers_Modifier_Creator_Identifier" Association="Self.FK_ExceptionsModifier_FkUsers_Modifier_Creator_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="BlockCalendar" EntitySet="BlockCalendar" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LinkedCentres_FkCentres_Identifier" Association="Self.FK_LinkedCentres_FkCentres_Identifier">
+            <End Role="Centres" EntitySet="Centres" />
+            <End Role="LinkedCentres" EntitySet="LinkedCentres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LinkedCentresChild_FkUsers_Identifier" Association="Self.FK_LinkedCentresChild_FkUsers_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="LinkedUsers" EntitySet="LinkedUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LinkedCentresMerchant_FkUsers_Identifier" Association="Self.FK_LinkedCentresMerchant_FkUsers_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="LinkedCentres" EntitySet="LinkedCentres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LinkedCentresParent_FkUsers_Parent_Identifier" Association="Self.FK_LinkedCentresParent_FkUsers_Parent_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="LinkedUsers" EntitySet="LinkedUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LinkedProducts_FkUsers_Identifier" Association="Self.FK_LinkedProducts_FkUsers_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="LinkedProducts" EntitySet="LinkedProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_FkStatus_Identifier" Association="Self.FK_Orders_FkStatus_Identifier">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdersManufacturer_FkUsers_Manufacturer_Identifier" Association="Self.FK_OrdersManufacturer_FkUsers_Manufacturer_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdersMerchant_FkUsers_Merchant_Identifier" Association="Self.FK_OrdersMerchant_FkUsers_Merchant_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdersProducts_FkOrders_Identifier" Association="Self.FK_OrdersProducts_FkOrders_Identifier">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OrdersProducts" EntitySet="OrdersProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Timezones_FkCountries_Identifier" Association="Self.FK_Timezones_FkCountries_Identifier">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Timezones" EntitySet="Timezones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Turns_FkTurnsStatus_Identifier" Association="Self.FK_Turns_FkTurnsStatus_Identifier">
+            <End Role="TurnsStatus" EntitySet="TurnsStatus" />
+            <End Role="Turns" EntitySet="Turns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Turns_FkUsers_Manufacturer_Identifier" Association="Self.FK_Turns_FkUsers_Manufacturer_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Turns" EntitySet="Turns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Turns_FkUsers_Merchant_Identifier" Association="Self.FK_Turns_FkUsers_Merchant_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Turns" EntitySet="Turns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Turns_FkUsers_Modifier_Identifier" Association="Self.FK_Turns_FkUsers_Modifier_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Turns" EntitySet="Turns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Turns_FkUsers_Requester_Identifier" Association="Self.FK_Turns_FkUsers_Requester_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Turns" EntitySet="Turns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TurnsProducts_FkTurns_Identifier" Association="Self.FK_TurnsProducts_FkTurns_Identifier">
+            <End Role="Turns" EntitySet="Turns" />
+            <End Role="TurnsProducts" EntitySet="TurnsProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UnloadingTime_FkCentres_Identifier" Association="Self.FK_UnloadingTime_FkCentres_Identifier">
+            <End Role="Centres" EntitySet="Centres" />
+            <End Role="UnloadingTime" EntitySet="UnloadingTime" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UnloadingTime_FkUsers_Manufacturer_Identifier" Association="Self.FK_UnloadingTime_FkUsers_Manufacturer_Identifier">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="UnloadingTime" EntitySet="UnloadingTime" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_FkCompanies_Identifier" Association="Self.FK_Users_FkCompanies_Identifier">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_FkCountries_Identifier" Association="Self.FK_Users_FkCountries_Identifier">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_FkRole_Identifier" Association="Self.FK_Users_FkRole_Identifier">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Model" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="ModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Advices" EntityType="Model.Advices" />
+          <EntitySet Name="AdvicesProducts" EntityType="Model.AdvicesProducts" />
+          <EntitySet Name="BlockCalendar" EntityType="Model.BlockCalendar" />
+          <EntitySet Name="BlockingReasons" EntityType="Model.BlockingReasons" />
+          <EntitySet Name="Centres" EntityType="Model.Centres" />
+          <EntitySet Name="Client" EntityType="Model.Client" />
+          <EntitySet Name="Companies" EntityType="Model.Companies" />
+          <EntitySet Name="Countries" EntityType="Model.Countries" />
+          <EntitySet Name="LinkedCentres" EntityType="Model.LinkedCentres" />
+          <EntitySet Name="LinkedProducts" EntityType="Model.LinkedProducts" />
+          <EntitySet Name="LinkedUsers" EntityType="Model.LinkedUsers" />
+          <EntitySet Name="Orders" EntityType="Model.Orders" />
+          <EntitySet Name="OrdersProducts" EntityType="Model.OrdersProducts" />
+          <EntitySet Name="Roles" EntityType="Model.Roles" />
+          <EntitySet Name="Status" EntityType="Model.Status" />
+          <EntitySet Name="sysdiagrams" EntityType="Model.sysdiagrams" />
+          <EntitySet Name="Timezones" EntityType="Model.Timezones" />
+          <EntitySet Name="Turns" EntityType="Model.Turns" />
+          <EntitySet Name="TurnsProducts" EntityType="Model.TurnsProducts" />
+          <EntitySet Name="TurnsStatus" EntityType="Model.TurnsStatus" />
+          <EntitySet Name="UnloadingTime" EntityType="Model.UnloadingTime" />
+          <EntitySet Name="Users" EntityType="Model.Users" />
+          <AssociationSet Name="FK_Advices_FkCentres_Identifier" Association="Model.FK_Advices_FkCentres_Identifier">
+            <End Role="Centres" EntitySet="Centres" />
+            <End Role="Advices" EntitySet="Advices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Advices_FkUsers_Manufacturer_Identifier" Association="Model.FK_Advices_FkUsers_Manufacturer_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Advices" EntitySet="Advices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Advices_FkUsers_Merchant_Identifier" Association="Model.FK_Advices_FkUsers_Merchant_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Advices" EntitySet="Advices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdvicesProducts_FkAdvices_Identifier" Association="Model.FK_AdvicesProducts_FkAdvices_Identifier">
+            <End Role="Advices" EntitySet="Advices" />
+            <End Role="AdvicesProducts" EntitySet="AdvicesProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Exceptions_FkBlockingReasons_Identifier" Association="Model.FK_Exceptions_FkBlockingReasons_Identifier">
+            <End Role="BlockingReasons" EntitySet="BlockingReasons" />
+            <End Role="BlockCalendar" EntitySet="BlockCalendar" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Exceptions_FkCentres_Identifier" Association="Model.FK_Exceptions_FkCentres_Identifier">
+            <End Role="Centres" EntitySet="Centres" />
+            <End Role="BlockCalendar" EntitySet="BlockCalendar" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExceptionsMerchant_FkUsers_Merchant_Identifier" Association="Model.FK_ExceptionsMerchant_FkUsers_Merchant_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="BlockCalendar" EntitySet="BlockCalendar" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExceptionsModifier_FkUsers_Modifier_Creator_Identifier" Association="Model.FK_ExceptionsModifier_FkUsers_Modifier_Creator_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="BlockCalendar" EntitySet="BlockCalendar" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Centres_FkTimezones_Identifier" Association="Model.FK_Centres_FkTimezones_Identifier">
+            <End Role="Timezones" EntitySet="Timezones" />
+            <End Role="Centres" EntitySet="Centres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Centres_FkUsers_Merchant_Identifier" Association="Model.FK_Centres_FkUsers_Merchant_Identifier">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="Centres" EntitySet="Centres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Centres_FkUsers_Responsable_Identifier" Association="Model.FK_Centres_FkUsers_Responsable_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Centres" EntitySet="Centres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LinkedCentres_FkCentres_Identifier" Association="Model.FK_LinkedCentres_FkCentres_Identifier">
+            <End Role="Centres" EntitySet="Centres" />
+            <End Role="LinkedCentres" EntitySet="LinkedCentres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UnloadingTime_FkCentres_Identifier" Association="Model.FK_UnloadingTime_FkCentres_Identifier">
+            <End Role="Centres" EntitySet="Centres" />
+            <End Role="UnloadingTime" EntitySet="UnloadingTime" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Companies_FkCountries_Identifier" Association="Model.FK_Companies_FkCountries_Identifier">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Companies" EntitySet="Companies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Companies_FkRole_Identifier" Association="Model.FK_Companies_FkRole_Identifier">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Companies" EntitySet="Companies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UnloadingTime_FkUsers_Manufacturer_Identifier" Association="Model.FK_UnloadingTime_FkUsers_Manufacturer_Identifier">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="UnloadingTime" EntitySet="UnloadingTime" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_FkCompanies_Identifier" Association="Model.FK_Users_FkCompanies_Identifier">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Timezones_FkCountries_Identifier" Association="Model.FK_Timezones_FkCountries_Identifier">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Timezones" EntitySet="Timezones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_FkCountries_Identifier" Association="Model.FK_Users_FkCountries_Identifier">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LinkedCentresMerchant_FkUsers_Identifier" Association="Model.FK_LinkedCentresMerchant_FkUsers_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="LinkedCentres" EntitySet="LinkedCentres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LinkedProducts_FkUsers_Identifier" Association="Model.FK_LinkedProducts_FkUsers_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="LinkedProducts" EntitySet="LinkedProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LinkedCentresChild_FkUsers_Identifier" Association="Model.FK_LinkedCentresChild_FkUsers_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="LinkedUsers" EntitySet="LinkedUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LinkedCentresParent_FkUsers_Parent_Identifier" Association="Model.FK_LinkedCentresParent_FkUsers_Parent_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="LinkedUsers" EntitySet="LinkedUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_FkStatus_Identifier" Association="Model.FK_Orders_FkStatus_Identifier">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdersManufacturer_FkUsers_Manufacturer_Identifier" Association="Model.FK_OrdersManufacturer_FkUsers_Manufacturer_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdersMerchant_FkUsers_Merchant_Identifier" Association="Model.FK_OrdersMerchant_FkUsers_Merchant_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdersProducts_FkOrders_Identifier" Association="Model.FK_OrdersProducts_FkOrders_Identifier">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OrdersProducts" EntitySet="OrdersProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_FkRole_Identifier" Association="Model.FK_Users_FkRole_Identifier">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Turns_FkTurnsStatus_Identifier" Association="Model.FK_Turns_FkTurnsStatus_Identifier">
+            <End Role="TurnsStatus" EntitySet="TurnsStatus" />
+            <End Role="Turns" EntitySet="Turns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Turns_FkUsers_Manufacturer_Identifier" Association="Model.FK_Turns_FkUsers_Manufacturer_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Turns" EntitySet="Turns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Turns_FkUsers_Merchant_Identifier" Association="Model.FK_Turns_FkUsers_Merchant_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Turns" EntitySet="Turns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Turns_FkUsers_Modifier_Identifier" Association="Model.FK_Turns_FkUsers_Modifier_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Turns" EntitySet="Turns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Turns_FkUsers_Requester_Identifier" Association="Model.FK_Turns_FkUsers_Requester_Identifier">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Turns" EntitySet="Turns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TurnsProducts_FkTurns_Identifier" Association="Model.FK_TurnsProducts_FkTurns_Identifier">
+            <End Role="Turns" EntitySet="Turns" />
+            <End Role="TurnsProducts" EntitySet="TurnsProducts" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Advices">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkUsers_Merchant_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkUsers_Manufacturer_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="AdviceNumber" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="ManualAdvise" Type="Boolean" Nullable="false" />
+          <Property Name="Orders_OrderNumber" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkCentres_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="ReceiptDate" Type="DateTime" Precision="0" />
+          <Property Name="ProcessingDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Centres" Relationship="Model.FK_Advices_FkCentres_Identifier" FromRole="Advices" ToRole="Centres" />
+          <NavigationProperty Name="Users" Relationship="Model.FK_Advices_FkUsers_Manufacturer_Identifier" FromRole="Advices" ToRole="Users" />
+          <NavigationProperty Name="Users1" Relationship="Model.FK_Advices_FkUsers_Merchant_Identifier" FromRole="Advices" ToRole="Users" />
+          <NavigationProperty Name="AdvicesProducts" Relationship="Model.FK_AdvicesProducts_FkAdvices_Identifier" FromRole="Advices" ToRole="AdvicesProducts" />
+        </EntityType>
+        <EntityType Name="AdvicesProducts">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkAdvices_Identifier" Type="Int64" />
+          <Property Name="Code" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="ReceivedAndAcceptedQuantity" Type="Int64" />
+          <NavigationProperty Name="Advices" Relationship="Model.FK_AdvicesProducts_FkAdvices_Identifier" FromRole="AdvicesProducts" ToRole="Advices" />
+        </EntityType>
+        <EntityType Name="BlockCalendar">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkUsers_Merchant_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkCentres_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="StartDateTime" Type="DateTime" Precision="0" />
+          <Property Name="EndDateTime" Type="DateTime" Precision="0" />
+          <Property Name="Dock" Type="Int32" />
+          <Property Name="GeneralRuleToApply" Type="Boolean" Nullable="false" />
+          <Property Name="FkBlockingReasons_Identifier" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="LastChangeDate" Type="DateTime" Precision="0" />
+          <Property Name="FkUsers_Creator_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BlockingReasons" Relationship="Model.FK_Exceptions_FkBlockingReasons_Identifier" FromRole="BlockCalendar" ToRole="BlockingReasons" />
+          <NavigationProperty Name="Centres" Relationship="Model.FK_Exceptions_FkCentres_Identifier" FromRole="BlockCalendar" ToRole="Centres" />
+          <NavigationProperty Name="Users" Relationship="Model.FK_ExceptionsMerchant_FkUsers_Merchant_Identifier" FromRole="BlockCalendar" ToRole="Users" />
+          <NavigationProperty Name="Users1" Relationship="Model.FK_ExceptionsModifier_FkUsers_Modifier_Creator_Identifier" FromRole="BlockCalendar" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="BlockingReasons">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BlockCalendar" Relationship="Model.FK_Exceptions_FkBlockingReasons_Identifier" FromRole="BlockingReasons" ToRole="BlockCalendar" />
+        </EntityType>
+        <EntityType Name="Centres">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="FkUsers_Merchant_Identifier" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkUsers_Responsable_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="PkIdentifier" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="WeeklyCapacity" Type="Int32" />
+          <Property Name="CurrentWeekCapacity" Type="Int32" />
+          <Property Name="FirstDay" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="ListOfWorkingDays" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="StartTime" Type="DateTime" Precision="0" />
+          <Property Name="EndTime" Type="DateTime" Precision="0" />
+          <Property Name="Name" Type="String" MaxLength="175" FixedLength="false" Unicode="false" />
+          <Property Name="NumberOfDocks" Type="Int16" />
+          <Property Name="TimeBetweenSuppliers" Type="Int32" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="LastChangeDate" Type="DateTime" Precision="0" />
+          <Property Name="FkTimezones_Identifier" Type="Int64" Nullable="false" />
+          <Property Name="AddressStreet" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="AddressNumber" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="PostCode" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="Town" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="Region" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Advices" Relationship="Model.FK_Advices_FkCentres_Identifier" FromRole="Centres" ToRole="Advices" />
+          <NavigationProperty Name="BlockCalendar" Relationship="Model.FK_Exceptions_FkCentres_Identifier" FromRole="Centres" ToRole="BlockCalendar" />
+          <NavigationProperty Name="Timezones" Relationship="Model.FK_Centres_FkTimezones_Identifier" FromRole="Centres" ToRole="Timezones" />
+          <NavigationProperty Name="Companies" Relationship="Model.FK_Centres_FkUsers_Merchant_Identifier" FromRole="Centres" ToRole="Companies" />
+          <NavigationProperty Name="Users" Relationship="Model.FK_Centres_FkUsers_Responsable_Identifier" FromRole="Centres" ToRole="Users" />
+          <NavigationProperty Name="LinkedCentres" Relationship="Model.FK_LinkedCentres_FkCentres_Identifier" FromRole="Centres" ToRole="LinkedCentres" />
+          <NavigationProperty Name="UnloadingTime" Relationship="Model.FK_UnloadingTime_FkCentres_Identifier" FromRole="Centres" ToRole="UnloadingTime" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="User" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Token" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="RefreshTokenLifeTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="AllowedOrigin" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Companies">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="ChangePasswordNextTime" Type="Boolean" />
+          <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="175" FixedLength="false" Unicode="false" />
+          <Property Name="LastAccess" Type="DateTime" Precision="0" />
+          <Property Name="FkRole_Identifier" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="LastChangeDate" Type="DateTime" Precision="0" />
+          <Property Name="Companies_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="AddressStreet" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="AddressNumber" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="PostCode" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="Town" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="Region" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="FkCountries_Identifier" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Centres" Relationship="Model.FK_Centres_FkUsers_Merchant_Identifier" FromRole="Companies" ToRole="Centres" />
+          <NavigationProperty Name="Countries" Relationship="Model.FK_Companies_FkCountries_Identifier" FromRole="Companies" ToRole="Countries" />
+          <NavigationProperty Name="Roles" Relationship="Model.FK_Companies_FkRole_Identifier" FromRole="Companies" ToRole="Roles" />
+          <NavigationProperty Name="UnloadingTime" Relationship="Model.FK_UnloadingTime_FkUsers_Manufacturer_Identifier" FromRole="Companies" ToRole="UnloadingTime" />
+          <NavigationProperty Name="Users" Relationship="Model.FK_Users_FkCompanies_Identifier" FromRole="Companies" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Countries">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Companies" Relationship="Model.FK_Companies_FkCountries_Identifier" FromRole="Countries" ToRole="Companies" />
+          <NavigationProperty Name="Timezones" Relationship="Model.FK_Timezones_FkCountries_Identifier" FromRole="Countries" ToRole="Timezones" />
+          <NavigationProperty Name="Users" Relationship="Model.FK_Users_FkCountries_Identifier" FromRole="Countries" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="LinkedCentres">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkUsers_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkCentres_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Centres" Relationship="Model.FK_LinkedCentres_FkCentres_Identifier" FromRole="LinkedCentres" ToRole="Centres" />
+          <NavigationProperty Name="Users" Relationship="Model.FK_LinkedCentresMerchant_FkUsers_Identifier" FromRole="LinkedCentres" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="LinkedProducts">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkUsers_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="ProductCode" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="Model.FK_LinkedProducts_FkUsers_Identifier" FromRole="LinkedProducts" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="LinkedUsers">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkUsers_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkUsers_Parent_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="Model.FK_LinkedCentresChild_FkUsers_Identifier" FromRole="LinkedUsers" ToRole="Users" />
+          <NavigationProperty Name="Users1" Relationship="Model.FK_LinkedCentresParent_FkUsers_Parent_Identifier" FromRole="LinkedUsers" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkUsers_Merchant_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkUsers_Manufacturer_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="OrderNumber" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="MaxDeliveryDate" Type="DateTime" Precision="0" />
+          <Property Name="OrderType" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="FkStatus_Identifier" Type="Int32" />
+          <Property Name="LastChangeDate" Type="DateTime" Precision="0" />
+          <Property Name="ProcessingDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Status" Relationship="Model.FK_Orders_FkStatus_Identifier" FromRole="Orders" ToRole="Status" />
+          <NavigationProperty Name="Users" Relationship="Model.FK_OrdersManufacturer_FkUsers_Manufacturer_Identifier" FromRole="Orders" ToRole="Users" />
+          <NavigationProperty Name="Users1" Relationship="Model.FK_OrdersMerchant_FkUsers_Merchant_Identifier" FromRole="Orders" ToRole="Users" />
+          <NavigationProperty Name="OrdersProducts" Relationship="Model.FK_OrdersProducts_FkOrders_Identifier" FromRole="Orders" ToRole="OrdersProducts" />
+        </EntityType>
+        <EntityType Name="OrdersProducts">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkOrders_Identifier" Type="Int64" />
+          <Property Name="Line" Type="Int32" />
+          <Property Name="Code" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="SplitQuantity" Type="Int64" />
+          <NavigationProperty Name="Orders" Relationship="Model.FK_OrdersProducts_FkOrders_Identifier" FromRole="OrdersProducts" ToRole="Orders" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Scope" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Companies" Relationship="Model.FK_Companies_FkRole_Identifier" FromRole="Roles" ToRole="Companies" />
+          <NavigationProperty Name="Users" Relationship="Model.FK_Users_FkRole_Identifier" FromRole="Roles" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Status">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Orders" Relationship="Model.FK_Orders_FkStatus_Identifier" FromRole="Status" ToRole="Orders" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Timezones">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkCountries_Identifier" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="UTCOffset" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Centres" Relationship="Model.FK_Centres_FkTimezones_Identifier" FromRole="Timezones" ToRole="Centres" />
+          <NavigationProperty Name="Countries" Relationship="Model.FK_Timezones_FkCountries_Identifier" FromRole="Timezones" ToRole="Countries" />
+        </EntityType>
+        <EntityType Name="Turns">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkUsers_Merchant_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkUsers_Manufacturer_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkUsers_Requester_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkUsers_Modifier_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="Orders_OrderNumber" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="ReceivingAdvice_ReceivingAdviceNumber" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="Dock" Type="Int16" />
+          <Property Name="StartDateTime" Type="DateTime" Precision="0" />
+          <Property Name="EndDateTime" Type="DateTime" Precision="0" />
+          <Property Name="FixedTime" Type="DateTime" Precision="0" />
+          <Property Name="VariableTime" Type="DateTime" Precision="0" />
+          <Property Name="LastChangeDate" Type="DateTime" Precision="0" />
+          <Property Name="FkTurnsStatus_Identifier" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="TurnsStatus" Relationship="Model.FK_Turns_FkTurnsStatus_Identifier" FromRole="Turns" ToRole="TurnsStatus" />
+          <NavigationProperty Name="Users" Relationship="Model.FK_Turns_FkUsers_Manufacturer_Identifier" FromRole="Turns" ToRole="Users" />
+          <NavigationProperty Name="Users1" Relationship="Model.FK_Turns_FkUsers_Merchant_Identifier" FromRole="Turns" ToRole="Users" />
+          <NavigationProperty Name="Users2" Relationship="Model.FK_Turns_FkUsers_Modifier_Identifier" FromRole="Turns" ToRole="Users" />
+          <NavigationProperty Name="Users3" Relationship="Model.FK_Turns_FkUsers_Requester_Identifier" FromRole="Turns" ToRole="Users" />
+          <NavigationProperty Name="TurnsProducts" Relationship="Model.FK_TurnsProducts_FkTurns_Identifier" FromRole="Turns" ToRole="TurnsProducts" />
+        </EntityType>
+        <EntityType Name="TurnsProducts">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkTurns_Identifier" Type="Int64" />
+          <Property Name="Code" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="ScheludedQuantity" Type="Int64" />
+          <NavigationProperty Name="Turns" Relationship="Model.FK_TurnsProducts_FkTurns_Identifier" FromRole="TurnsProducts" ToRole="Turns" />
+        </EntityType>
+        <EntityType Name="TurnsStatus">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Turns" Relationship="Model.FK_Turns_FkTurnsStatus_Identifier" FromRole="TurnsStatus" ToRole="Turns" />
+        </EntityType>
+        <EntityType Name="UnloadingTime">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FkCentres_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkUsers_Manufacturer_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="ProductCode" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="MeasureUnit" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="Dock" Type="Int16" />
+          <Property Name="AmountPerPallet" Type="Decimal" Precision="14" Scale="7" />
+          <Property Name="SpecificUnloadingTime" Type="Int32" />
+          <Property Name="PalletType" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="LastChangeDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Centres" Relationship="Model.FK_UnloadingTime_FkCentres_Identifier" FromRole="UnloadingTime" ToRole="Centres" />
+          <NavigationProperty Name="Companies" Relationship="Model.FK_UnloadingTime_FkUsers_Manufacturer_Identifier" FromRole="UnloadingTime" ToRole="Companies" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="PkIdentifier" />
+          </Key>
+          <Property Name="PkIdentifier" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="ChangePasswordNextTime" Type="Boolean" />
+          <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="175" FixedLength="false" Unicode="false" />
+          <Property Name="LastAccess" Type="DateTime" Precision="0" />
+          <Property Name="FkRole_Identifier" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="LastChangeDate" Type="DateTime" Precision="0" />
+          <Property Name="FkCompanies_Identifier" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="FkCountries_Identifier" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Advices" Relationship="Model.FK_Advices_FkUsers_Manufacturer_Identifier" FromRole="Users" ToRole="Advices" />
+          <NavigationProperty Name="Advices1" Relationship="Model.FK_Advices_FkUsers_Merchant_Identifier" FromRole="Users" ToRole="Advices" />
+          <NavigationProperty Name="BlockCalendar" Relationship="Model.FK_ExceptionsMerchant_FkUsers_Merchant_Identifier" FromRole="Users" ToRole="BlockCalendar" />
+          <NavigationProperty Name="BlockCalendar1" Relationship="Model.FK_ExceptionsModifier_FkUsers_Modifier_Creator_Identifier" FromRole="Users" ToRole="BlockCalendar" />
+          <NavigationProperty Name="Centres" Relationship="Model.FK_Centres_FkUsers_Responsable_Identifier" FromRole="Users" ToRole="Centres" />
+          <NavigationProperty Name="Companies" Relationship="Model.FK_Users_FkCompanies_Identifier" FromRole="Users" ToRole="Companies" />
+          <NavigationProperty Name="Countries" Relationship="Model.FK_Users_FkCountries_Identifier" FromRole="Users" ToRole="Countries" />
+          <NavigationProperty Name="LinkedCentres" Relationship="Model.FK_LinkedCentresMerchant_FkUsers_Identifier" FromRole="Users" ToRole="LinkedCentres" />
+          <NavigationProperty Name="LinkedProducts" Relationship="Model.FK_LinkedProducts_FkUsers_Identifier" FromRole="Users" ToRole="LinkedProducts" />
+          <NavigationProperty Name="LinkedUsers" Relationship="Model.FK_LinkedCentresChild_FkUsers_Identifier" FromRole="Users" ToRole="LinkedUsers" />
+          <NavigationProperty Name="LinkedUsers1" Relationship="Model.FK_LinkedCentresParent_FkUsers_Parent_Identifier" FromRole="Users" ToRole="LinkedUsers" />
+          <NavigationProperty Name="Orders" Relationship="Model.FK_OrdersManufacturer_FkUsers_Manufacturer_Identifier" FromRole="Users" ToRole="Orders" />
+          <NavigationProperty Name="Orders1" Relationship="Model.FK_OrdersMerchant_FkUsers_Merchant_Identifier" FromRole="Users" ToRole="Orders" />
+          <NavigationProperty Name="Roles" Relationship="Model.FK_Users_FkRole_Identifier" FromRole="Users" ToRole="Roles" />
+          <NavigationProperty Name="Turns" Relationship="Model.FK_Turns_FkUsers_Manufacturer_Identifier" FromRole="Users" ToRole="Turns" />
+          <NavigationProperty Name="Turns1" Relationship="Model.FK_Turns_FkUsers_Merchant_Identifier" FromRole="Users" ToRole="Turns" />
+          <NavigationProperty Name="Turns2" Relationship="Model.FK_Turns_FkUsers_Modifier_Identifier" FromRole="Users" ToRole="Turns" />
+          <NavigationProperty Name="Turns3" Relationship="Model.FK_Turns_FkUsers_Requester_Identifier" FromRole="Users" ToRole="Turns" />
+        </EntityType>
+        <Association Name="FK_Advices_FkCentres_Identifier">
+          <End Type="Model.Centres" Role="Centres" Multiplicity="0..1" />
+          <End Type="Model.Advices" Role="Advices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Centres">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Advices">
+              <PropertyRef Name="FkCentres_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Advices_FkUsers_Manufacturer_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.Advices" Role="Advices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Advices">
+              <PropertyRef Name="FkUsers_Manufacturer_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Advices_FkUsers_Merchant_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.Advices" Role="Advices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Advices">
+              <PropertyRef Name="FkUsers_Merchant_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdvicesProducts_FkAdvices_Identifier">
+          <End Type="Model.Advices" Role="Advices" Multiplicity="0..1" />
+          <End Type="Model.AdvicesProducts" Role="AdvicesProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Advices">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="AdvicesProducts">
+              <PropertyRef Name="FkAdvices_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Exceptions_FkBlockingReasons_Identifier">
+          <End Type="Model.BlockingReasons" Role="BlockingReasons" Multiplicity="1" />
+          <End Type="Model.BlockCalendar" Role="BlockCalendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BlockingReasons">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="BlockCalendar">
+              <PropertyRef Name="FkBlockingReasons_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Exceptions_FkCentres_Identifier">
+          <End Type="Model.Centres" Role="Centres" Multiplicity="0..1" />
+          <End Type="Model.BlockCalendar" Role="BlockCalendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Centres">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="BlockCalendar">
+              <PropertyRef Name="FkCentres_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExceptionsMerchant_FkUsers_Merchant_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.BlockCalendar" Role="BlockCalendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="BlockCalendar">
+              <PropertyRef Name="FkUsers_Merchant_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExceptionsModifier_FkUsers_Modifier_Creator_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.BlockCalendar" Role="BlockCalendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="BlockCalendar">
+              <PropertyRef Name="FkUsers_Creator_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Centres_FkTimezones_Identifier">
+          <End Type="Model.Timezones" Role="Timezones" Multiplicity="1" />
+          <End Type="Model.Centres" Role="Centres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Timezones">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Centres">
+              <PropertyRef Name="FkTimezones_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Centres_FkUsers_Merchant_Identifier">
+          <End Type="Model.Companies" Role="Companies" Multiplicity="1" />
+          <End Type="Model.Centres" Role="Centres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Centres">
+              <PropertyRef Name="FkUsers_Merchant_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Centres_FkUsers_Responsable_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.Centres" Role="Centres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Centres">
+              <PropertyRef Name="FkUsers_Responsable_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LinkedCentres_FkCentres_Identifier">
+          <End Type="Model.Centres" Role="Centres" Multiplicity="0..1" />
+          <End Type="Model.LinkedCentres" Role="LinkedCentres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Centres">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="LinkedCentres">
+              <PropertyRef Name="FkCentres_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UnloadingTime_FkCentres_Identifier">
+          <End Type="Model.Centres" Role="Centres" Multiplicity="0..1" />
+          <End Type="Model.UnloadingTime" Role="UnloadingTime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Centres">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="UnloadingTime">
+              <PropertyRef Name="FkCentres_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Companies_FkCountries_Identifier">
+          <End Type="Model.Countries" Role="Countries" Multiplicity="1" />
+          <End Type="Model.Companies" Role="Companies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Companies">
+              <PropertyRef Name="FkCountries_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Companies_FkRole_Identifier">
+          <End Type="Model.Roles" Role="Roles" Multiplicity="1" />
+          <End Type="Model.Companies" Role="Companies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Companies">
+              <PropertyRef Name="FkRole_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UnloadingTime_FkUsers_Manufacturer_Identifier">
+          <End Type="Model.Companies" Role="Companies" Multiplicity="0..1" />
+          <End Type="Model.UnloadingTime" Role="UnloadingTime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="UnloadingTime">
+              <PropertyRef Name="FkUsers_Manufacturer_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_FkCompanies_Identifier">
+          <End Type="Model.Companies" Role="Companies" Multiplicity="0..1" />
+          <End Type="Model.Users" Role="Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="FkCompanies_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Timezones_FkCountries_Identifier">
+          <End Type="Model.Countries" Role="Countries" Multiplicity="1" />
+          <End Type="Model.Timezones" Role="Timezones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Timezones">
+              <PropertyRef Name="FkCountries_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_FkCountries_Identifier">
+          <End Type="Model.Countries" Role="Countries" Multiplicity="1" />
+          <End Type="Model.Users" Role="Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="FkCountries_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LinkedCentresMerchant_FkUsers_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.LinkedCentres" Role="LinkedCentres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="LinkedCentres">
+              <PropertyRef Name="FkUsers_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LinkedProducts_FkUsers_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.LinkedProducts" Role="LinkedProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="LinkedProducts">
+              <PropertyRef Name="FkUsers_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LinkedCentresChild_FkUsers_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.LinkedUsers" Role="LinkedUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="LinkedUsers">
+              <PropertyRef Name="FkUsers_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LinkedCentresParent_FkUsers_Parent_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.LinkedUsers" Role="LinkedUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="LinkedUsers">
+              <PropertyRef Name="FkUsers_Parent_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_FkStatus_Identifier">
+          <End Type="Model.Status" Role="Status" Multiplicity="0..1" />
+          <End Type="Model.Orders" Role="Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="FkStatus_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdersManufacturer_FkUsers_Manufacturer_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.Orders" Role="Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="FkUsers_Manufacturer_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdersMerchant_FkUsers_Merchant_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.Orders" Role="Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="FkUsers_Merchant_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdersProducts_FkOrders_Identifier">
+          <End Type="Model.Orders" Role="Orders" Multiplicity="0..1" />
+          <End Type="Model.OrdersProducts" Role="OrdersProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="OrdersProducts">
+              <PropertyRef Name="FkOrders_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_FkRole_Identifier">
+          <End Type="Model.Roles" Role="Roles" Multiplicity="1" />
+          <End Type="Model.Users" Role="Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="FkRole_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Turns_FkTurnsStatus_Identifier">
+          <End Type="Model.TurnsStatus" Role="TurnsStatus" Multiplicity="1" />
+          <End Type="Model.Turns" Role="Turns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TurnsStatus">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Turns">
+              <PropertyRef Name="FkTurnsStatus_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Turns_FkUsers_Manufacturer_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.Turns" Role="Turns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Turns">
+              <PropertyRef Name="FkUsers_Manufacturer_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Turns_FkUsers_Merchant_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.Turns" Role="Turns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Turns">
+              <PropertyRef Name="FkUsers_Merchant_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Turns_FkUsers_Modifier_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.Turns" Role="Turns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Turns">
+              <PropertyRef Name="FkUsers_Modifier_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Turns_FkUsers_Requester_Identifier">
+          <End Type="Model.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="Model.Turns" Role="Turns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="Turns">
+              <PropertyRef Name="FkUsers_Requester_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TurnsProducts_FkTurns_Identifier">
+          <End Type="Model.Turns" Role="Turns" Multiplicity="0..1" />
+          <End Type="Model.TurnsProducts" Role="TurnsProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Turns">
+              <PropertyRef Name="PkIdentifier" />
+            </Principal>
+            <Dependent Role="TurnsProducts">
+              <PropertyRef Name="FkTurns_Identifier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs" Space="C-S">
+        <Alias Key="Model" Value="Model" />
+        <Alias Key="Target" Value="Model.Store" />
+        <EntityContainerMapping CdmEntityContainer="ModelContainer" StorageEntityContainer="ModelStoreContainer">
+          <EntitySetMapping Name="Advices">
+            <EntityTypeMapping TypeName="Model.Advices">
+              <MappingFragment StoreEntitySet="Advices">
+                <ScalarProperty Name="ProcessingDate" ColumnName="ProcessingDate" />
+                <ScalarProperty Name="ReceiptDate" ColumnName="ReceiptDate" />
+                <ScalarProperty Name="FkCentres_Identifier" ColumnName="FkCentres_Identifier" />
+                <ScalarProperty Name="Orders_OrderNumber" ColumnName="Orders_OrderNumber" />
+                <ScalarProperty Name="ManualAdvise" ColumnName="ManualAdvise" />
+                <ScalarProperty Name="AdviceNumber" ColumnName="AdviceNumber" />
+                <ScalarProperty Name="FkUsers_Manufacturer_Identifier" ColumnName="FkUsers_Manufacturer_Identifier" />
+                <ScalarProperty Name="FkUsers_Merchant_Identifier" ColumnName="FkUsers_Merchant_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdvicesProducts">
+            <EntityTypeMapping TypeName="Model.AdvicesProducts">
+              <MappingFragment StoreEntitySet="AdvicesProducts">
+                <ScalarProperty Name="ReceivedAndAcceptedQuantity" ColumnName="ReceivedAndAcceptedQuantity" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="FkAdvices_Identifier" ColumnName="FkAdvices_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BlockCalendar">
+            <EntityTypeMapping TypeName="Model.BlockCalendar">
+              <MappingFragment StoreEntitySet="BlockCalendar">
+                <ScalarProperty Name="FkUsers_Creator_Identifier" ColumnName="FkUsers_Creator_Identifier" />
+                <ScalarProperty Name="LastChangeDate" ColumnName="LastChangeDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="FkBlockingReasons_Identifier" ColumnName="FkBlockingReasons_Identifier" />
+                <ScalarProperty Name="GeneralRuleToApply" ColumnName="GeneralRuleToApply" />
+                <ScalarProperty Name="Dock" ColumnName="Dock" />
+                <ScalarProperty Name="EndDateTime" ColumnName="EndDateTime" />
+                <ScalarProperty Name="StartDateTime" ColumnName="StartDateTime" />
+                <ScalarProperty Name="FkCentres_Identifier" ColumnName="FkCentres_Identifier" />
+                <ScalarProperty Name="FkUsers_Merchant_Identifier" ColumnName="FkUsers_Merchant_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BlockingReasons">
+            <EntityTypeMapping TypeName="Model.BlockingReasons">
+              <MappingFragment StoreEntitySet="BlockingReasons">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Centres">
+            <EntityTypeMapping TypeName="Model.Centres">
+              <MappingFragment StoreEntitySet="Centres">
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="Town" ColumnName="Town" />
+                <ScalarProperty Name="PostCode" ColumnName="PostCode" />
+                <ScalarProperty Name="AddressNumber" ColumnName="AddressNumber" />
+                <ScalarProperty Name="AddressStreet" ColumnName="AddressStreet" />
+                <ScalarProperty Name="FkTimezones_Identifier" ColumnName="FkTimezones_Identifier" />
+                <ScalarProperty Name="LastChangeDate" ColumnName="LastChangeDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="TimeBetweenSuppliers" ColumnName="TimeBetweenSuppliers" />
+                <ScalarProperty Name="NumberOfDocks" ColumnName="NumberOfDocks" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="ListOfWorkingDays" ColumnName="ListOfWorkingDays" />
+                <ScalarProperty Name="FirstDay" ColumnName="FirstDay" />
+                <ScalarProperty Name="CurrentWeekCapacity" ColumnName="CurrentWeekCapacity" />
+                <ScalarProperty Name="WeeklyCapacity" ColumnName="WeeklyCapacity" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+                <ScalarProperty Name="FkUsers_Responsable_Identifier" ColumnName="FkUsers_Responsable_Identifier" />
+                <ScalarProperty Name="FkUsers_Merchant_Identifier" ColumnName="FkUsers_Merchant_Identifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Client">
+            <EntityTypeMapping TypeName="Model.Client">
+              <MappingFragment StoreEntitySet="Client">
+                <ScalarProperty Name="AllowedOrigin" ColumnName="AllowedOrigin" />
+                <ScalarProperty Name="RefreshTokenLifeTime" ColumnName="RefreshTokenLifeTime" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="User" ColumnName="User" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Companies">
+            <EntityTypeMapping TypeName="Model.Companies">
+              <MappingFragment StoreEntitySet="Companies">
+                <ScalarProperty Name="FkCountries_Identifier" ColumnName="FkCountries_Identifier" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="Town" ColumnName="Town" />
+                <ScalarProperty Name="PostCode" ColumnName="PostCode" />
+                <ScalarProperty Name="AddressNumber" ColumnName="AddressNumber" />
+                <ScalarProperty Name="AddressStreet" ColumnName="AddressStreet" />
+                <ScalarProperty Name="Companies_Identifier" ColumnName="Companies_Identifier" />
+                <ScalarProperty Name="LastChangeDate" ColumnName="LastChangeDate" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="FkRole_Identifier" ColumnName="FkRole_Identifier" />
+                <ScalarProperty Name="LastAccess" ColumnName="LastAccess" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="ChangePasswordNextTime" ColumnName="ChangePasswordNextTime" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Countries">
+            <EntityTypeMapping TypeName="Model.Countries">
+              <MappingFragment StoreEntitySet="Countries">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LinkedCentres">
+            <EntityTypeMapping TypeName="Model.LinkedCentres">
+              <MappingFragment StoreEntitySet="LinkedCentres">
+                <ScalarProperty Name="FkCentres_Identifier" ColumnName="FkCentres_Identifier" />
+                <ScalarProperty Name="FkUsers_Identifier" ColumnName="FkUsers_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LinkedProducts">
+            <EntityTypeMapping TypeName="Model.LinkedProducts">
+              <MappingFragment StoreEntitySet="LinkedProducts">
+                <ScalarProperty Name="ProductCode" ColumnName="ProductCode" />
+                <ScalarProperty Name="FkUsers_Identifier" ColumnName="FkUsers_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LinkedUsers">
+            <EntityTypeMapping TypeName="Model.LinkedUsers">
+              <MappingFragment StoreEntitySet="LinkedUsers">
+                <ScalarProperty Name="FkUsers_Parent_Identifier" ColumnName="FkUsers_Parent_Identifier" />
+                <ScalarProperty Name="FkUsers_Identifier" ColumnName="FkUsers_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="Model.Orders">
+              <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="ProcessingDate" ColumnName="ProcessingDate" />
+                <ScalarProperty Name="LastChangeDate" ColumnName="LastChangeDate" />
+                <ScalarProperty Name="FkStatus_Identifier" ColumnName="FkStatus_Identifier" />
+                <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+                <ScalarProperty Name="MaxDeliveryDate" ColumnName="MaxDeliveryDate" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="FkUsers_Manufacturer_Identifier" ColumnName="FkUsers_Manufacturer_Identifier" />
+                <ScalarProperty Name="FkUsers_Merchant_Identifier" ColumnName="FkUsers_Merchant_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrdersProducts">
+            <EntityTypeMapping TypeName="Model.OrdersProducts">
+              <MappingFragment StoreEntitySet="OrdersProducts">
+                <ScalarProperty Name="SplitQuantity" ColumnName="SplitQuantity" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Line" ColumnName="Line" />
+                <ScalarProperty Name="FkOrders_Identifier" ColumnName="FkOrders_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="Model.Roles">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Scope" ColumnName="Scope" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Status">
+            <EntityTypeMapping TypeName="Model.Status">
+              <MappingFragment StoreEntitySet="Status">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="Model.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Timezones">
+            <EntityTypeMapping TypeName="Model.Timezones">
+              <MappingFragment StoreEntitySet="Timezones">
+                <ScalarProperty Name="UTCOffset" ColumnName="UTCOffset" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="FkCountries_Identifier" ColumnName="FkCountries_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Turns">
+            <EntityTypeMapping TypeName="Model.Turns">
+              <MappingFragment StoreEntitySet="Turns">
+                <ScalarProperty Name="FkTurnsStatus_Identifier" ColumnName="FkTurnsStatus_Identifier" />
+                <ScalarProperty Name="LastChangeDate" ColumnName="LastChangeDate" />
+                <ScalarProperty Name="VariableTime" ColumnName="VariableTime" />
+                <ScalarProperty Name="FixedTime" ColumnName="FixedTime" />
+                <ScalarProperty Name="EndDateTime" ColumnName="EndDateTime" />
+                <ScalarProperty Name="StartDateTime" ColumnName="StartDateTime" />
+                <ScalarProperty Name="Dock" ColumnName="Dock" />
+                <ScalarProperty Name="ReceivingAdvice_ReceivingAdviceNumber" ColumnName="ReceivingAdvice_ReceivingAdviceNumber" />
+                <ScalarProperty Name="Orders_OrderNumber" ColumnName="Orders_OrderNumber" />
+                <ScalarProperty Name="FkUsers_Modifier_Identifier" ColumnName="FkUsers_Modifier_Identifier" />
+                <ScalarProperty Name="FkUsers_Requester_Identifier" ColumnName="FkUsers_Requester_Identifier" />
+                <ScalarProperty Name="FkUsers_Manufacturer_Identifier" ColumnName="FkUsers_Manufacturer_Identifier" />
+                <ScalarProperty Name="FkUsers_Merchant_Identifier" ColumnName="FkUsers_Merchant_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TurnsProducts">
+            <EntityTypeMapping TypeName="Model.TurnsProducts">
+              <MappingFragment StoreEntitySet="TurnsProducts">
+                <ScalarProperty Name="ScheludedQuantity" ColumnName="ScheludedQuantity" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="FkTurns_Identifier" ColumnName="FkTurns_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TurnsStatus">
+            <EntityTypeMapping TypeName="Model.TurnsStatus">
+              <MappingFragment StoreEntitySet="TurnsStatus">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnloadingTime">
+            <EntityTypeMapping TypeName="Model.UnloadingTime">
+              <MappingFragment StoreEntitySet="UnloadingTime">
+                <ScalarProperty Name="LastChangeDate" ColumnName="LastChangeDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="PalletType" ColumnName="PalletType" />
+                <ScalarProperty Name="SpecificUnloadingTime" ColumnName="SpecificUnloadingTime" />
+                <ScalarProperty Name="AmountPerPallet" ColumnName="AmountPerPallet" />
+                <ScalarProperty Name="Dock" ColumnName="Dock" />
+                <ScalarProperty Name="MeasureUnit" ColumnName="MeasureUnit" />
+                <ScalarProperty Name="ProductCode" ColumnName="ProductCode" />
+                <ScalarProperty Name="FkUsers_Manufacturer_Identifier" ColumnName="FkUsers_Manufacturer_Identifier" />
+                <ScalarProperty Name="FkCentres_Identifier" ColumnName="FkCentres_Identifier" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="Model.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="FkCountries_Identifier" ColumnName="FkCountries_Identifier" />
+                <ScalarProperty Name="FkCompanies_Identifier" ColumnName="FkCompanies_Identifier" />
+                <ScalarProperty Name="LastChangeDate" ColumnName="LastChangeDate" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="FkRole_Identifier" ColumnName="FkRole_Identifier" />
+                <ScalarProperty Name="LastAccess" ColumnName="LastAccess" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="ChangePasswordNextTime" ColumnName="ChangePasswordNextTime" />
+                <ScalarProperty Name="PkIdentifier" ColumnName="PkIdentifier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7e3ae6b4b5934c3197538965b8f730f5" Name="Diagram1" ZoomLevel="70" >
+        <EntityTypeShape EntityType="Model.Advices" Width="1.5" PointX="16.5" PointY="13.5" />
+        <EntityTypeShape EntityType="Model.AdvicesProducts" Width="1.5" PointX="18.75" PointY="13.25" />
+        <EntityTypeShape EntityType="Model.BlockCalendar" Width="1.5" PointX="16.5" PointY="21.25" />
+        <EntityTypeShape EntityType="Model.BlockingReasons" Width="1.5" PointX="14.25" PointY="24.375" />
+        <EntityTypeShape EntityType="Model.Centres" Width="1.5" PointX="8.25" PointY="16.125" />
+        <EntityTypeShape EntityType="Model.Client" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Model.Companies" Width="1.5" PointX="6" PointY="16.625" />
+        <EntityTypeShape EntityType="Model.Countries" Width="1.5" PointX="0.75" PointY="18.125" />
+        <EntityTypeShape EntityType="Model.LinkedCentres" Width="1.5" PointX="16.5" PointY="18.25" />
+        <EntityTypeShape EntityType="Model.LinkedProducts" Width="1.5" PointX="13.5" PointY="29.625" />
+        <EntityTypeShape EntityType="Model.LinkedUsers" Width="1.5" PointX="13.5" PointY="21.25" />
+        <EntityTypeShape EntityType="Model.Orders" Width="1.5" PointX="13.5" PointY="11.5" />
+        <EntityTypeShape EntityType="Model.OrdersProducts" Width="1.5" PointX="15.75" PointY="10" />
+        <EntityTypeShape EntityType="Model.Roles" Width="1.5" PointX="3.75" PointY="15.25" />
+        <EntityTypeShape EntityType="Model.Status" Width="1.5" PointX="11.25" PointY="12.375" />
+        <EntityTypeShape EntityType="Model.sysdiagrams" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Model.Timezones" Width="1.5" PointX="3" PointY="18" />
+        <EntityTypeShape EntityType="Model.Turns" Width="1.5" PointX="19.5" PointY="16.75" />
+        <EntityTypeShape EntityType="Model.TurnsProducts" Width="1.5" PointX="21.75" PointY="18.25" />
+        <EntityTypeShape EntityType="Model.TurnsStatus" Width="1.5" PointX="17.25" PointY="26.375" />
+        <EntityTypeShape EntityType="Model.UnloadingTime" Width="1.5" PointX="13.5" PointY="16.5" />
+        <EntityTypeShape EntityType="Model.Users" Width="1.5" PointX="11.25" PointY="15.875" />
+        <AssociationConnector Association="Model.FK_Advices_FkCentres_Identifier" />
+        <AssociationConnector Association="Model.FK_Advices_FkUsers_Manufacturer_Identifier" />
+        <AssociationConnector Association="Model.FK_Advices_FkUsers_Merchant_Identifier" />
+        <AssociationConnector Association="Model.FK_AdvicesProducts_FkAdvices_Identifier" />
+        <AssociationConnector Association="Model.FK_Exceptions_FkBlockingReasons_Identifier" />
+        <AssociationConnector Association="Model.FK_Exceptions_FkCentres_Identifier" />
+        <AssociationConnector Association="Model.FK_ExceptionsMerchant_FkUsers_Merchant_Identifier" />
+        <AssociationConnector Association="Model.FK_ExceptionsModifier_FkUsers_Modifier_Creator_Identifier" />
+        <AssociationConnector Association="Model.FK_Centres_FkTimezones_Identifier" />
+        <AssociationConnector Association="Model.FK_Centres_FkUsers_Merchant_Identifier" />
+        <AssociationConnector Association="Model.FK_Centres_FkUsers_Responsable_Identifier" />
+        <AssociationConnector Association="Model.FK_LinkedCentres_FkCentres_Identifier" />
+        <AssociationConnector Association="Model.FK_UnloadingTime_FkCentres_Identifier" />
+        <AssociationConnector Association="Model.FK_Companies_FkCountries_Identifier" />
+        <AssociationConnector Association="Model.FK_Companies_FkRole_Identifier" />
+        <AssociationConnector Association="Model.FK_UnloadingTime_FkUsers_Manufacturer_Identifier" />
+        <AssociationConnector Association="Model.FK_Users_FkCompanies_Identifier" />
+        <AssociationConnector Association="Model.FK_Timezones_FkCountries_Identifier" />
+        <AssociationConnector Association="Model.FK_Users_FkCountries_Identifier" />
+        <AssociationConnector Association="Model.FK_LinkedCentresMerchant_FkUsers_Identifier" />
+        <AssociationConnector Association="Model.FK_LinkedProducts_FkUsers_Identifier" />
+        <AssociationConnector Association="Model.FK_LinkedCentresChild_FkUsers_Identifier" />
+        <AssociationConnector Association="Model.FK_LinkedCentresParent_FkUsers_Parent_Identifier" />
+        <AssociationConnector Association="Model.FK_Orders_FkStatus_Identifier" />
+        <AssociationConnector Association="Model.FK_OrdersManufacturer_FkUsers_Manufacturer_Identifier" />
+        <AssociationConnector Association="Model.FK_OrdersMerchant_FkUsers_Merchant_Identifier" />
+        <AssociationConnector Association="Model.FK_OrdersProducts_FkOrders_Identifier" />
+        <AssociationConnector Association="Model.FK_Users_FkRole_Identifier" />
+        <AssociationConnector Association="Model.FK_Turns_FkTurnsStatus_Identifier" />
+        <AssociationConnector Association="Model.FK_Turns_FkUsers_Manufacturer_Identifier" />
+        <AssociationConnector Association="Model.FK_Turns_FkUsers_Merchant_Identifier" />
+        <AssociationConnector Association="Model.FK_Turns_FkUsers_Modifier_Identifier" />
+        <AssociationConnector Association="Model.FK_Turns_FkUsers_Requester_Identifier" />
+        <AssociationConnector Association="Model.FK_TurnsProducts_FkTurns_Identifier" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

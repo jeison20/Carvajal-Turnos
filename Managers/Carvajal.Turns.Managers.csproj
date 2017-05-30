@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Managers</RootNamespace>
     <AssemblyName>Managers</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,6 +47,7 @@
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -67,6 +69,10 @@
     <Compile Include="Components\CAdvices.cs" />
     <Compile Include="Components\CAdvicesProducts.cs" />
     <Compile Include="Components\CCentres.cs" />
+    <Compile Include="Components\CCompanies.cs" />
+    <Compile Include="Components\CCountries.cs" />
+    <Compile Include="Components\CTimezones.cs" />
+    <Compile Include="Components\CUnloadingTime.cs" />
     <Compile Include="Components\COrders.cs" />
     <Compile Include="Components\COrdersProducts.cs" />
     <Compile Include="Components\CTurns.cs" />
@@ -76,6 +82,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Log4Net.config">
+      <Link>Log4Net.config</Link>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -84,13 +93,19 @@
       <Project>{ac6e6726-2494-41e0-b404-22aa852473f5}</Project>
       <Name>Carvajal.Turns.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Carvajal.Turns.CodeResponses\Carvajal.Turns.CodeResponses.csproj">
+      <Project>{a0405aa2-6578-4004-b9db-7e080f4f6878}</Project>
+      <Name>Carvajal.Turns.CodeResponses</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TextFile\Carvajal.Turns.TextFile.csproj">
       <Project>{52d4daad-72fc-4cc8-999e-abc2860578c1}</Project>
       <Name>Carvajal.Turns.TextFile</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(SolutionDir)Log4Net.config" "$(ProjectDir)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

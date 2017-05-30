@@ -1,4 +1,4 @@
-﻿using PlainText.Resources;
+﻿using TextFile.Resources;
 using Renci.SshNet;
 using System;
 using System.Collections.Generic;

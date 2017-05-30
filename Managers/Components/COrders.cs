@@ -2,10 +2,11 @@
 using System;
 using System.Data.Entity;
 using System.Linq;
+using Carvajal.Turns.CodeResponses;
 
 namespace Managers.Components
 {
-    public class COrders : Model
+    public class COrders : ModelContainer
     {
         private static COrders _Instance = new COrders();
 
@@ -32,7 +33,7 @@ namespace Managers.Components
             }
             catch (Exception ex)
             {
-                LogManager.WriteLog("Error en el metodo SaveOrders" + ex.Message);
+                LogManager.WriteLog(Order.FkUsers_Merchant_Identifier,"0", Responses.A0 + "SaveOrders: " + ex.Message);
                 return false;
             }
         }

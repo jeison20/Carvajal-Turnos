@@ -5,10 +5,11 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Carvajal.Turns.CodeResponses;
 
 namespace Managers.Components
 {
- public   class CAdvicesProducts : Model
+ public   class CAdvicesProducts : ModelContainer
     {
         private static CAdvicesProducts _Instance = new CAdvicesProducts();
 
@@ -36,7 +37,7 @@ namespace Managers.Components
             }
             catch (Exception ex)
             {
-                LogManager.WriteLog("Error en el metodo SaveAdvicesProduct" + ex.Message);
+                LogManager.WriteLog("0","0", Responses.A0+" SaveAdvicesProduct: " + ex.Message);
                 return false;
             }
         }

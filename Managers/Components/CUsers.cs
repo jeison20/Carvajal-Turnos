@@ -1,10 +1,12 @@
-﻿using Carvajal.Shifts.Data;
+﻿
+using Carvajal.Shifts.Data;
 using System;
 using System.Linq;
+using Carvajal.Turns.CodeResponses;
 
 namespace Managers.Components
 {
-    public class CUsers : Model
+    public class CUsers : ModelContainer
     {
         private static CUsers _Instance = new CUsers();
 
@@ -31,7 +33,7 @@ namespace Managers.Components
             }
             catch (Exception ex)
             {
-                LogManager.WriteLog("Error en el metodo SaveUser " + ex.Message);
+                LogManager.WriteLog(User.FkCompanies_Identifier, "0", Responses.A0+"SaveUser. " + ex.Message);
                 return false;
             }
         }
@@ -42,7 +44,7 @@ namespace Managers.Components
             {
                 return Instance.Users.FirstOrDefault(c => c.PkIdentifier == IdentificationNumber);
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }

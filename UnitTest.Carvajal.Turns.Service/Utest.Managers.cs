@@ -1,5 +1,4 @@
 ﻿using Managers;
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Carvajal.Shifts.Data;
 using System;
@@ -22,25 +21,28 @@ namespace UnitTest.Carvajal.Turns.Service
         [TestMethod()]
         public void ConvertEdiToXMLTest()
         {
-            string PathFile = @"C:\Logs\Comercio1\LV'7798084010000'9930707451978'6004033191-1'ORDERS'6'1'5188405.edi";
-            XmlDocument Document = ObjManagers.ConvertEdiToXML(PathFile);
-            Assert.IsNotNull(Document);
+            //string PathFile = @"C:\Logs\Comercio1\LV'7798084010000'9930707451978'6004033191-1'ORDERS'6'1'5188405.edi";
+            //XmlDocument Document = ObjManagers.ConvertEdiToXML(PathFile);
+            //Assert.IsNotNull(Document);
+            Assert.Fail();
         }
 
         [TestMethod()]
         public void AuthenticArchiveMD5Test()
         {
-            string PathFile = @"C:\Logs\Comercio1\LV'7798084010000'9930707451978'6004033191-1'ORDERS'6'1'5188405.edi";
-            string AuthenticFile = ObjManagers.AuthenticArchiveMD5(PathFile);
-            Assert.IsFalse(string.IsNullOrEmpty(AuthenticFile));
+            //string PathFile = @"C:\Logs\Comercio1\LV'7798084010000'9930707451978'6004033191-1'ORDERS'6'1'5188405.edi";
+            //string AuthenticFile = ObjManagers.AuthenticArchiveMD5(PathFile);
+            //Assert.IsFalse(string.IsNullOrEmpty(AuthenticFile));
+            Assert.Fail();
         }
 
         [TestMethod()]
         public void UploadFileTest()
         {
-            string PathFile = @"C:\Logs\Comercio1\LV'7798084010000'9930707451978'6004033191-1'ORDERS'6'1'5188405.edi";
-            Stream Archivo = File.OpenRead(PathFile);
-            Assert.IsTrue(ObjManagers.UploadFile(Path.GetFileName(PathFile), Archivo, "Comercio1", "Procesados"));
+            //string PathFile = @"C:\Logs\Comercio1\LV'7798084010000'9930707451978'6004033191-1'ORDERS'6'1'5188405.edi";
+            //Stream Archivo = File.OpenRead(PathFile);
+            //Assert.IsTrue(ObjManagers.UploadFile(Path.GetFileName(PathFile), Archivo, "Comercio1", "Procesados"));
+            Assert.Fail();
         }
 
         [TestMethod()]

@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Carvajal.Turns.CodeResponses;
 
 namespace Managers.Components
 {
-    public class CTurns : Model
+    public class CTurns : ModelContainer
     {
         private static CTurns _Instance = new CTurns();
 
@@ -33,7 +34,7 @@ namespace Managers.Components
             }
             catch (Exception ex)
             {
-                LogManager.WriteLog("Error en el metodo SaveCentres" + ex.Message);
+                LogManager.WriteLog(Turn.FkUsers_Merchant_Identifier, "0", Responses.A0 + "SaveCentres: " + ex.Message);
                 return false;
             }
         }
@@ -55,7 +56,7 @@ namespace Managers.Components
         {
             try
             {
-                return Instance.Turns.FirstOrDefault(c => c.Orders_OrderNumber == OrderNumber && c.Status.Equals("A"));
+                return Instance.Turns.FirstOrDefault(c => c.Orders_OrderNumber == OrderNumber && c.FkTurnsStatus_Identifier.Equals("1"));
             }
             catch
             {
